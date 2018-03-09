@@ -6,7 +6,7 @@
 * body-parser
 
 #### list o shit 
-- build a full crud for about
+- build a full ~cr~ud for about
 - build a full crud for info
 
 # Nameing convention
