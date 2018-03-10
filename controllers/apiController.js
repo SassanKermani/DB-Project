@@ -140,7 +140,7 @@ const readInfo = (req, res)=>{
 
 };
 
-/*----------  Create info   ----------*/
+/*----------  Create Info   ----------*/
 const creatInfo = (req, res)=>{
 
 	let tempPromis = new Promise((resolve, reject) =>{
@@ -198,6 +198,21 @@ const creatInfo = (req, res)=>{
 
 	});
 	res.send('it broke');
+}
+
+/*----------  Upadte Info  ----------*/
+const updateInfo = (req, res)=>{
+
+	/*
+	* get id
+	* query for it
+	* get updte ojb 
+	* make sure update obj is valad (simaler to creat)
+	* update and send back new object
+	*/
+
+	
+
 }
 
 /*=====  End of funcitons  ======*/

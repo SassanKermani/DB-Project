@@ -19,7 +19,7 @@ name Of db 			= 'ancon'
 about collection 	= 'about'
 info collection 	= 'info'
 
-#### schema's
+#### schema's and example objects that will be needed
 
 * info collection
 schema is based off of the documents in the about collection
@@ -28,6 +28,17 @@ schema is based off of the documents in the about collection
 {
 	name : < string >,
 	dataType : < string >
+}
+
+* update req.body
+{
+	id : < id >
+	newDoc : {
+		< thing > : < thing >,
+		.
+		.
+		.
+	}
 }
 
 # boroken things
