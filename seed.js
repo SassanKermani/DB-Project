@@ -42,3 +42,11 @@ const newThingInDb = {
 //   dbo.collection(infoCollection).drop();
 
 // });
+
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   var dbo = db.db(nameOfDb);
+
+//   dbo.collection(aboutCollection).drop();
+
+// });

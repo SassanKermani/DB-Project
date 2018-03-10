@@ -41,6 +41,7 @@ const apiEndpoints =  {
 	},
 	'info collection' :{
 		'/api/readInfo' : 'get rout sends all docs in the info collection',
+		'/api/creatInfo' : 'post rout creat new doc in info collection'
 	}
 
 

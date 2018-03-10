@@ -166,27 +166,30 @@ const creatInfo = (req, res)=>{
 			// console.log('tempVar[i].name');
 			// console.log(tempVar[i].name);
 
-			let hotSecVar = tempVar[i].name;
-
 			//console.log('hotSecVar');
 			// console.log(hotSecVar);
 
-			if(req.body[hotSecVar] != undefined ){
-				newThingInDb[hotSecVar] = req.body[hotSecVar];
+			if(req.body[tempVar[i].name] != undefined ){
+				if( typeof req.body[tempVar[i].name] === tempVar[i].dataType ){
+					newThingInDb[tempVar[i].name] = req.body[tempVar[i].name];
+				}else{
+
+				}
+				
 			}
 
 		}
 
 		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			
+			dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
 				if (err) throw err;
-				let dbo = db.db(nameOfDb);
-				
-				dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
-					if (err) throw err;
-					// console.log('insertOne into the infoCollection');
-				db.close();
-				});
+				// console.log('insertOne into the infoCollection');
+			db.close();
 			});
+		});
 
 		res.send(newThingInDb);
 
