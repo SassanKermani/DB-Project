@@ -160,6 +160,7 @@ const creatInfo = (req, res)=>{
 		//res.send(tempVar);
 
 		let newThingInDb = {};
+		let insetIsGo = true;
 
 		for(let i = 0; i < tempVar.length; i++){
 
@@ -173,28 +174,30 @@ const creatInfo = (req, res)=>{
 				if( typeof req.body[tempVar[i].name] === tempVar[i].dataType ){
 					newThingInDb[tempVar[i].name] = req.body[tempVar[i].name];
 				}else{
-
+					insetIsGo = false;
+					res.send(`datatype of ${tempVar[i].name} is not correct`);
 				}
 				
 			}
 
 		}
 
-		MongoClient.connect(url, function(err, db) {
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			
-			dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
+		if(insetIsGo === true){
+			MongoClient.connect(url, function(err, db) {
 				if (err) throw err;
-				// console.log('insertOne into the infoCollection');
-			db.close();
+				let dbo = db.db(nameOfDb);
+				
+				dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
+					if (err) throw err;
+					// console.log('insertOne into the infoCollection');
+				db.close();
+				});
 			});
-		});
-
-		res.send(newThingInDb);
+			res.send(newThingInDb);
+		}
 
 	});
-
+	res.send('it broke');
 }
 
 /*=====  End of funcitons  ======*/

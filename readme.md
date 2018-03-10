@@ -32,6 +32,6 @@ schema is based off of the documents in the about collection
 
 # boroken things
 - in the creatAbout you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... 
-- in the createInfo will not reqect if part is irelavent and grab relavent bit and put it in db
+
 
 # ideas
