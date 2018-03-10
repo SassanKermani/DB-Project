@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controllor = require('../controllers/apiController.js')
+const controller = require('../controllers/apiController.js');
 
 /*=====  End of bringing in and seting up NPM's  ======*/
 
@@ -19,16 +19,19 @@ router.get('/api/', function(req, res){
 });
 
 //read all docs in the about collection 
-router.get('/api/readAbout', controllor.readAbout);
+router.get('/api/readAbout', controller.readAbout);
 
 //creat new doc in the about collection
-router.post('/api/creatAbout', controllor.creatAbout);
+router.post('/api/creatAbout', controller.creatAbout);
 
 // read all docs in the info collection
-router.get('/api/readInfo', controllor.readInfo);
+router.get('/api/readInfo', controller.readInfo);
 
 //creat a new doc in the info collection
-router.post('/api/creatInfo', controllor.creatInfo);
+router.post('/api/creatInfo', controller.creatInfo);
+
+//update a doc in the info collection
+router.post('/api/updateInfo', controller.updateInfo);
 
 /*=====  End of routs  ======*/
 
@@ -41,7 +44,8 @@ const apiEndpoints =  {
 	},
 	'info collection' :{
 		'/api/readInfo' : 'get rout sends all docs in the info collection',
-		'/api/creatInfo' : 'post rout creat new doc in info collection'
+		'/api/creatInfo' : 'post rout creat new doc in info collection',
+		'/api/updateInfo' : 'post rout update a doc based on id'
 	}
 
 

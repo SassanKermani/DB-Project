@@ -4,6 +4,7 @@
 
 //mongo stuff
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId; 
 const url = `mongodb://localhost:27017/`;
 
 const nameOfDb = 'ancon'
@@ -160,7 +161,7 @@ const creatInfo = (req, res)=>{
 		//res.send(tempVar);
 
 		let newThingInDb = {};
-		let insetIsGo = true;
+		let insertIsGo = true;
 
 		for(let i = 0; i < tempVar.length; i++){
 
@@ -174,7 +175,7 @@ const creatInfo = (req, res)=>{
 				if( typeof req.body[tempVar[i].name] === tempVar[i].dataType ){
 					newThingInDb[tempVar[i].name] = req.body[tempVar[i].name];
 				}else{
-					insetIsGo = false;
+					insertIsGo = false;
 					res.send(`datatype of ${tempVar[i].name} is not correct`);
 				}
 				
@@ -182,7 +183,7 @@ const creatInfo = (req, res)=>{
 
 		}
 
-		if(insetIsGo === true){
+		if(insertIsGo === true){
 			MongoClient.connect(url, function(err, db) {
 				if (err) throw err;
 				let dbo = db.db(nameOfDb);
@@ -209,9 +210,103 @@ const updateInfo = (req, res)=>{
 	* get updte ojb 
 	* make sure update obj is valad (simaler to creat)
 	* update and send back new object
+	
+	{
+		id : < id >
+		newDoc : {
+			< thing > : < thing >,
+			.
+			.
+			.
+		}
+	}
 	*/
 
-	
+	let newThingInDb = {};
+	let updateIsGo = true;
+
+	let tempPromis = new Promise((resolve, reject) =>{
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
+				if (err) throw err;
+				console.log('result');
+				console.log(result);
+				resolve(result);
+		    	db.close();
+			});
+		});
+	});
+
+	tempPromis.then((tempVar)=>{
+		for(let i = 0; i < tempVar.length; i++){
+
+			if(req.body.id != undefined){
+				if(req.body.newDoc != undefined && typeof req.body.newDoc === 'object' ){
+					if(req.body.newDoc[tempVar[i].name] != undefined ){
+						if( typeof req.body.newDoc[tempVar[i].name] === tempVar[i].dataType ){
+							newThingInDb[tempVar[i].name] = req.body.newDoc[tempVar[i].name];
+						}else{
+							res.send(`datatype of ${tempVar[i].name} is not correct`);
+							updateIsGo = false;
+						}
+					}
+				}else{
+					res.send(`the req.body.newDoc is undefined or is not of type object`);
+					updateIsGo = false;
+				}
+			}else{
+				res.send(`the req.body.id is undefined`);
+				updateIsGo = false;
+			}
+
+		}
+		console.log('req.body.id');
+		console.log(req.body.id);
+		console.log('req.body.newDoc');
+		console.log(req.body.newDoc);
+		console.log('newThingInDb');
+		console.log(newThingInDb);
+		res.send(newThingInDb);
+
+		if(updateIsGo === true){
+
+			let query = { _id : ObjectId("5aa40efce48ccf815eb5fccd") };
+
+			// console.log('newThingInDb');
+			// console.log(newThingInDb);
+			// console.log()
+			// console.log('query');
+			// console.log(query);
+
+
+			MongoClient.connect(url, function(err, db){
+				if (err) throw err;
+				let dbo = db.db(nameOfDb);
+				dbo.collection(infoCollection).updateOne(query, {$set: newThingInDb}, function(err, res) {
+					if (err) throw err;
+					console.log("1 document updated");
+					db.close();
+				});
+			});
+			res.send(newThingInDb);
+
+			// // test to make sure my query works
+			// MongoClient.connect(url, function(err, db){
+			// 	if (err) throw err;
+			// 	let dbo = db.db(nameOfDb);
+			// 	dbo.collection(infoCollection).find(query).toArray(function(err, result) {
+			// 		if (err) throw err;
+			// 		console.log('test result');
+			// 		console.log(result);
+			// 		db.close();
+			// 	});
+			// });
+
+		}
+
+	})
 
 }
 
@@ -222,5 +317,6 @@ module.exports = {
 	readAbout,
 	creatAbout,
 	readInfo,
-	creatInfo
+	creatInfo,
+	updateInfo
 }
