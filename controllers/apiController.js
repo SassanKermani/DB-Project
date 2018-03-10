@@ -90,19 +90,19 @@ const creatAbout = (req, res)=>{
 			// console.log(req.body)
 			// console.log('in the insert if')
 
-			let newThingInDb = [
-				{
-					'name' : req.body.name,
-					'dataType' : req.body.dataType
-				}
-			]
+			let newThingInDb =
+			{
+				'name' : req.body.name,
+				'dataType' : req.body.dataType
+			};
+
 			// console.log(newThingInDb);
 
 			MongoClient.connect(url, function(err, db) {
 				if (err) throw err;
 				let dbo = db.db(nameOfDb);
 				
-				dbo.collection(aboutCollection).insertMany(newThingInDb, function(err, res){
+				dbo.collection(aboutCollection).insertOne(newThingInDb, function(err, res){
 					if (err) throw err;
 					// console.log('insertOne into the infoCollection');
 				db.close();
@@ -163,19 +163,30 @@ const creatInfo = (req, res)=>{
 
 		for(let i = 0; i < tempVar.length; i++){
 
-			console.log('tempVar[i].name');
-			console.log(tempVar[i].name);
+			// console.log('tempVar[i].name');
+			// console.log(tempVar[i].name);
 
 			let hotSecVar = tempVar[i].name;
 
-			console.log('hotSecVar');
-			console.log(hotSecVar);
+			//console.log('hotSecVar');
+			// console.log(hotSecVar);
 
 			if(req.body[hotSecVar] != undefined){
 				newThingInDb[hotSecVar] = req.body[hotSecVar];
 			}
 
 		}
+
+		MongoClient.connect(url, function(err, db) {
+				if (err) throw err;
+				let dbo = db.db(nameOfDb);
+				
+				dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
+					if (err) throw err;
+					// console.log('insertOne into the infoCollection');
+				db.close();
+				});
+			});
 
 		res.send(newThingInDb);
 

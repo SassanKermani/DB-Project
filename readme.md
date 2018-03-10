@@ -7,7 +7,7 @@
 
 #### list o shit 
 - build a full crUD for about
-- build a full crud for info
+- build a full crUD for info
 
 # Nameing convention
 
