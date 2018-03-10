@@ -171,7 +171,7 @@ const creatInfo = (req, res)=>{
 			//console.log('hotSecVar');
 			// console.log(hotSecVar);
 
-			if(req.body[hotSecVar] != undefined){
+			if(req.body[hotSecVar] != undefined ){
 				newThingInDb[hotSecVar] = req.body[hotSecVar];
 			}
 

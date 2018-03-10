@@ -32,6 +32,6 @@ schema is based off of the documents in the about collection
 
 # boroken things
 - in the creatAbout you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... 
-
+- in the createInfo you have to make suer the req.body.< anyghing > is = to the same type from the schema
 
 # ideas
