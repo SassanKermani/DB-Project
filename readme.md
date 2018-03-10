@@ -5,7 +5,10 @@
 * mongodb
 * body-parser
 
-#### list o shit 
+## The gole
+build a mongo db that uses one collectin as a schema for the other collection.
+
+# list o shit 
 - build a full crUD for about
 - build a full crUD for info
 
