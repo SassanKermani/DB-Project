@@ -25,7 +25,7 @@ const readAbout = (req, res)=>{
 			let dbo = db.db(nameOfDb);
 			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
 				if (err) throw err;
-				console.log(result);
+				//console.log(result);
 				resolve(result);
 		    	db.close();
 			});
@@ -40,7 +40,7 @@ const readAbout = (req, res)=>{
 
 /*----------  Creat About  ----------*/
 const creatAbout = (req, res)=>{
-	console.log('at the creatAbout function');
+	// console.log('at the creatAbout function');
 
 	let tempPromis = new Promise((resolve, reject) =>{
 		MongoClient.connect(url, function(err, db) {
@@ -64,13 +64,13 @@ const creatAbout = (req, res)=>{
 		//console.log(tempVar);
 		docsInAobutCollection = tempVar;
 
-		console.log('docsInAobutCollection')
-		console.log(docsInAobutCollection);
+		// console.log('docsInAobutCollection')
+		// console.log(docsInAobutCollection);
 
 		if(req.body.name != null && req.body.name && typeof req.body.name === 'string' ){
-			console.log('name is good');
+			// console.log('name is good');
 			if(req.body.dataType != null && req.body.dataType && typeof req.body.dataType === 'string' ){
-				console.log('dataType is good');
+				// console.log('dataType is good');
 				doTheThing = true
 				for(let i = 0; i < docsInAobutCollection.length; i++){
 					if(req.body.name === docsInAobutCollection[i].name){
@@ -88,7 +88,7 @@ const creatAbout = (req, res)=>{
 		if(doTheThing == true && doTheThing2 == true){
 
 			// console.log(req.body)
-			console.log('in the insert if')
+			// console.log('in the insert if')
 
 			let newThingInDb = [
 				{
@@ -96,7 +96,7 @@ const creatAbout = (req, res)=>{
 					'dataType' : req.body.dataType
 				}
 			]
-			console.log(newThingInDb);
+			// console.log(newThingInDb);
 
 			MongoClient.connect(url, function(err, db) {
 				if (err) throw err;
@@ -104,23 +104,91 @@ const creatAbout = (req, res)=>{
 				
 				dbo.collection(aboutCollection).insertMany(newThingInDb, function(err, res){
 					if (err) throw err;
-					console.log('insertOne into the infoCollection');
+					// console.log('insertOne into the infoCollection');
 				db.close();
 				});
 			});
 			res.send(newThingInDb);
+		}else{
+			res.send('this feild is already in the db');			
 		}
 
-		res.send('this feild is already in the db');
-		// res.send(newThingInDb);
+		res.send('it broke');
 	});
 
 };
+
+/*----------  Read info  ----------*/
+const readInfo = (req, res)=>{
+
+	let tempPromis = new Promise((resolve, reject) =>{
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(infoCollection).find({}).toArray(function(err, result){
+				if (err) throw err;
+				// console.log(result);
+				resolve(result);
+		    	db.close();
+			});
+		});
+	});
+
+	tempPromis.then((tempVar) =>{
+		res.send(tempVar);
+	});
+
+};
+
+/*----------  Create info   ----------*/
+const creatInfo = (req, res)=>{
+
+	let tempPromis = new Promise((resolve, reject) =>{
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
+				if (err) throw err;
+				//console.log(result);
+				resolve(result);
+		    	db.close();
+			});
+		});
+	});
+
+	tempPromis.then( (tempVar)=>{
+		//res.send(tempVar);
+
+		let newThingInDb = {};
+
+		for(let i = 0; i < tempVar.length; i++){
+
+			console.log('tempVar[i].name');
+			console.log(tempVar[i].name);
+
+			let hotSecVar = tempVar[i].name;
+
+			console.log('hotSecVar');
+			console.log(hotSecVar);
+
+			if(req.body[hotSecVar] != undefined){
+				newThingInDb[hotSecVar] = req.body[hotSecVar];
+			}
+
+		}
+
+		res.send(newThingInDb);
+
+	});
+
+}
 
 /*=====  End of funcitons  ======*/
 
 /*----------  exports  ----------*/
 module.exports = {
 	readAbout,
-	creatAbout
+	creatAbout,
+	readInfo,
+	creatInfo
 }

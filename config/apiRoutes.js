@@ -22,7 +22,13 @@ router.get('/api/', function(req, res){
 router.get('/api/readAbout', controllor.readAbout);
 
 //creat new doc in the about collection
-router.post('/api/creatAbout', controllor.creatAbout)
+router.post('/api/creatAbout', controllor.creatAbout);
+
+// read all docs in the info collection
+router.get('/api/readInfo', controllor.readInfo);
+
+//creat a new doc in the info collection
+router.post('/api/creatInfo', controllor.creatInfo);
 
 /*=====  End of routs  ======*/
 
@@ -30,8 +36,11 @@ router.post('/api/creatAbout', controllor.creatAbout)
 const apiEndpoints =  {
 	'/api' : 'list of all api endpoints',
 	'about collection' :{
-		'readAbout' : 'get rout sends all docs in the about collection',
-		'creatAbout' : 'post rout creat new doc in about collection'
+		'/api/readAbout' : 'get rout sends all docs in the about collection',
+		'/api/creatAbout' : 'post rout creat new doc in about collection'
+	},
+	'info collection' :{
+		'/api/readInfo' : 'get rout sends all docs in the info collection',
 	}
 
 
