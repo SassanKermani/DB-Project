@@ -9,7 +9,7 @@
 build a mongo db that uses one collectin as a schema for the other collection.
 
 # list o shit 
-- build a full crUD for about
+- build a full cruD for about
 - build a full cruD for info
 
 # Nameing convention
@@ -30,13 +30,22 @@ schema is based off of the documents in the about collection
 	dataType : < string >
 }
 
-* update req.body
+* udate about doc req.body
+{
+	id: < id >
+	newDoc : {
+		name : < string >,
+		dataType : < string >
+	}
+}
+
+* update info doc req.body
 {
 	id : < id >
 	newDoc : {
 		< thing > : < thing >,
 		.
-		.
+		. 
 		.
 	}
 }

@@ -58,23 +58,16 @@ const creatAbout = (req, res)=>{
 
 	let doTheThing = false;
 	let doTheThing2 = true;
-	let newThingInDb;
-	let docsInAobutCollection;
 
 	tempPromis.then((tempVar) =>{
-		//console.log(tempVar);
-		docsInAobutCollection = tempVar;
-
-		// console.log('docsInAobutCollection')
-		// console.log(docsInAobutCollection);
 
 		if(req.body.name != null && req.body.name && typeof req.body.name === 'string' ){
 			// console.log('name is good');
 			if(req.body.dataType != null && req.body.dataType && typeof req.body.dataType === 'string' ){
 				// console.log('dataType is good');
 				doTheThing = true
-				for(let i = 0; i < docsInAobutCollection.length; i++){
-					if(req.body.name === docsInAobutCollection[i].name){
+				for(let i = 0; i < tempVar.length; i++){
+					if(req.body.name === tempVar[i].name){
 						doTheThing2 = false;
 					}
 				}
@@ -118,6 +111,81 @@ const creatAbout = (req, res)=>{
 	});
 
 };
+
+/*----------  Update About  ----------*/
+const updateAbout = (req, res)=>{
+	let tempPromis = new Promise((resolve, reject) =>{
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(nameOfDb);
+			dbo.collection(aboutCollection).find({}).toArray(function(err, result) {
+				if (err) throw err;
+				//console.log(result);
+				resolve(result);
+				db.close();
+			});
+		});
+	});
+
+	let doTheThing = false;
+	let doTheThing2 = true;
+	let docsInAobutCollection;
+
+	tempPromis.then((tempVar) =>{
+
+		if( req.body.id != null || req.body.id != undefined ){
+			if(req.body.newDoc != undefined && typeof req.body.newDoc === 'object' ){
+				if(req.body.newDoc.name != null && req.body.newDoc.name && typeof req.body.newDoc.name === 'string' ){
+					console.log('name is good');
+					if(req.body.newDoc.dataType != null && req.body.newDoc.dataType && typeof req.body.newDoc.dataType === 'string' ){
+						console.log('dataType is good');
+						doTheThing = true
+						for(let i = 0; i < tempVar.length; i++){
+							if(req.body.newDoc.name === tempVar[i].name){
+								doTheThing2 = false;
+							}
+						}
+
+					}else{
+						res.send('err the dataType was eather null or not of type string');
+					}
+				}else{
+					res.send('err the name was eather null or not of type string')
+				}
+			}else{
+				res.send('req.body.newDoc is undefined or not an object');
+			}
+		}else{
+			res.send('req.body.id is null')
+		}
+
+		if(doTheThing == true && doTheThing2 == true){
+
+			console.log("in the spot");
+
+			let newThingInDb =
+			{
+				'name' : req.body.newDoc.name,
+				'dataType' : req.body.newDoc.dataType
+			};
+
+			let query = { _id : ObjectId(req.body.id) };
+
+			MongoClient.connect(url, function(err, db){
+				if (err) throw err;
+				let dbo = db.db(nameOfDb);
+				dbo.collection(aboutCollection).updateOne(query, {$set: newThingInDb}, function(err, res) {
+					if (err) throw err;
+					console.log("1 document updated");
+					db.close();
+				});
+			});
+			res.send(newThingInDb);
+		}
+
+	})
+
+}
 
 /*----------  Read info  ----------*/
 const readInfo = (req, res)=>{
@@ -205,12 +273,6 @@ const creatInfo = (req, res)=>{
 const updateInfo = (req, res)=>{
 
 	/*
-	* get id
-	* query for it
-	* get updte ojb 
-	* make sure update obj is valad (simaler to creat)
-	* update and send back new object
-	
 	{
 		id : < id >
 		newDoc : {
@@ -242,7 +304,7 @@ const updateInfo = (req, res)=>{
 	tempPromis.then((tempVar)=>{
 		for(let i = 0; i < tempVar.length; i++){
 
-			if(req.body.id != undefined){
+			if(req.body.id != null || req.body.id != undefined){
 				if(req.body.newDoc != undefined && typeof req.body.newDoc === 'object' ){
 					if(req.body.newDoc[tempVar[i].name] != undefined ){
 						if( typeof req.body.newDoc[tempVar[i].name] === tempVar[i].dataType ){
@@ -272,7 +334,7 @@ const updateInfo = (req, res)=>{
 
 		if(updateIsGo === true){
 
-			let query = { _id : ObjectId("5aa40efce48ccf815eb5fccd") };
+			let query = { _id : ObjectId(req.body.id) };
 
 			// console.log('newThingInDb');
 			// console.log(newThingInDb);
@@ -316,6 +378,7 @@ const updateInfo = (req, res)=>{
 module.exports = {
 	readAbout,
 	creatAbout,
+	updateAbout,
 	readInfo,
 	creatInfo,
 	updateInfo
