@@ -27,7 +27,7 @@ app.use(apiRouter);
 
 //defult rout
 app.get('/*', function(req, res){
-	res.send('that dose not aprear to be a rout');
+	res.send('that dose not aprear to be a rout, try /api for now');
 })
 
 /*=====  End of conecting out to other files  ======*/

@@ -9,8 +9,9 @@
 build a mongo db that uses one collectin as a schema for the other collection.
 
 # list o shit 
-- build a full cruD for about
-- build a full cruD for info
+- set up so user needs an api key to get in
+- (DONE)build a full crud for about
+- (DONE)build a full crud for info
 
 # Nameing convention
 

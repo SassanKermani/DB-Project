@@ -187,6 +187,39 @@ const updateAbout = (req, res)=>{
 
 }
 
+/*----------  About Delete  ----------*/
+const deleteAbout = (req, res)=>{
+
+	let deleteIsGo = false;
+	let query;
+
+	if(req.body.id != null || req.body.id != undefined){
+		deleteIsGo = true;
+		query = { _id : ObjectId(req.body.id) };
+	}else{
+		res.send('id is null or undefined');
+	}
+
+	if(deleteIsGo === true){
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(nameOfDb);
+			dbo.collection(aboutCollection).deleteOne(query, function(err, obj) {
+				if (err) throw err;
+				console.log("1 document deleted");
+				db.close();
+			});
+		});
+		res.send('you just deleted that thing and it can not be restored ever');	
+	}else{
+		res.send('you broke it');
+	}
+
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+
+
 /*----------  Read info  ----------*/
 const readInfo = (req, res)=>{
 
@@ -271,18 +304,6 @@ const creatInfo = (req, res)=>{
 
 /*----------  Upadte Info  ----------*/
 const updateInfo = (req, res)=>{
-
-	/*
-	{
-		id : < id >
-		newDoc : {
-			< thing > : < thing >,
-			.
-			.
-			.
-		}
-	}
-	*/
 
 	let newThingInDb = {};
 	let updateIsGo = true;
@@ -372,6 +393,36 @@ const updateInfo = (req, res)=>{
 
 }
 
+/*----------  Delete Info  ----------*/
+
+const deleteInfo = (req, res)=>{
+
+	let deleteIsGo = false;
+	let query;
+
+	if(req.body.id != null || req.body.id != undefined){
+		deleteIsGo = true;
+		query = { _id : ObjectId(req.body.id) };
+	}else{
+		res.send('id is null or undefined');
+	}
+
+	if(deleteIsGo === true){
+		MongoClient.connect(url, function(err, db) {
+			if (err) throw err;
+			var dbo = db.db(nameOfDb);
+			dbo.collection(infoCollection).deleteOne(query, function(err, obj) {
+				if (err) throw err;
+				console.log("1 document deleted");
+				db.close();
+			});
+		});
+		res.send('you just deleted that thing and it can not be restored ever');	
+	}else{
+		res.snd('you broke it')
+	}
+}
+
 /*=====  End of funcitons  ======*/
 
 /*----------  exports  ----------*/
@@ -379,7 +430,9 @@ module.exports = {
 	readAbout,
 	creatAbout,
 	updateAbout,
+	deleteAbout,
 	readInfo,
 	creatInfo,
-	updateInfo
+	updateInfo,
+	deleteInfo
 }
