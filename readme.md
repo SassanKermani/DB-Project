@@ -12,6 +12,8 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - set up so user needs an api key to get in
 - (DONE)build a full crud for about
 - (DONE)build a full crud for info
+- (DONE)make a genral purpus query for the about collection
+- make a genral purpus query for the info collection
 
 # Nameing convention
 

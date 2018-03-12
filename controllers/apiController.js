@@ -187,7 +187,7 @@ const updateAbout = (req, res)=>{
 
 }
 
-/*----------  About Delete  ----------*/
+/*----------  Delete About  ----------*/
 const deleteAbout = (req, res)=>{
 
 	let deleteIsGo = false;
@@ -214,6 +214,54 @@ const deleteAbout = (req, res)=>{
 	}else{
 		res.send('you broke it');
 	}
+
+}
+
+/*----------  Query About  ----------*/
+
+const queryAbout = (req, res)=>{
+	/*
+	* see if there is an id
+	* see if there is a name
+	* see if there is a dataType 
+	* do the search
+	req.body = {
+		id : ,
+		name : ,
+		dataType : ,
+	}
+	*/
+
+	let tempPromis = new Promise((resolve, reject) =>{
+
+		query = {};
+
+		if(req.body.id != null || req.body.id != undefined){
+			query._id = ObjectId(req.body.id);
+		}
+		if(req.body.name != null || req.body.name != undefined){
+			query.name = req.body.name;
+			console.log('yep');
+		}
+		if(req.body.dataType != null || req.body.dataType != undefined){
+			query.dataType = req.body.dataType;
+		}
+
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(aboutCollection).find(query).toArray(function(err, result){
+				if (err) throw err;
+				// console.log(result);
+				resolve(result);
+		    	db.close();
+			});
+		});
+	});
+
+	tempPromis.then((tempVar) =>{
+		res.send(tempVar);
+	});
 
 }
 
@@ -345,13 +393,13 @@ const updateInfo = (req, res)=>{
 			}
 
 		}
-		console.log('req.body.id');
-		console.log(req.body.id);
-		console.log('req.body.newDoc');
-		console.log(req.body.newDoc);
-		console.log('newThingInDb');
-		console.log(newThingInDb);
-		res.send(newThingInDb);
+		// console.log('req.body.id');
+		// console.log(req.body.id);
+		// console.log('req.body.newDoc');
+		// console.log(req.body.newDoc);
+		// console.log('newThingInDb');
+		// console.log(newThingInDb);
+		// res.send(newThingInDb);
 
 		if(updateIsGo === true){
 
@@ -423,6 +471,35 @@ const deleteInfo = (req, res)=>{
 	}
 }
 
+/*----------  Query Info  ----------*/
+
+const queryInfo = (req, res)=>{
+	/*
+	* see if there is an id
+	* run though a for loop to get all about docs
+	* see if there is anything in any of the about docs
+	* do the search
+	*/
+
+	let tempPromis = new Promise((resolve, reject) =>{
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
+				if (err) throw err;
+				resolve(result);
+		    	db.close();
+			});
+		});
+	});
+
+	tempPromis.then((tempVar)=>{
+		res.send(tempVar);
+		
+	})
+
+}
+
 /*=====  End of funcitons  ======*/
 
 /*----------  exports  ----------*/
@@ -431,8 +508,10 @@ module.exports = {
 	creatAbout,
 	updateAbout,
 	deleteAbout,
+	queryAbout,
 	readInfo,
 	creatInfo,
 	updateInfo,
-	deleteInfo
+	deleteInfo,
+	queryInfo
 }

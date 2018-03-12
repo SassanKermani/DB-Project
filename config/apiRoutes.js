@@ -32,6 +32,10 @@ router.post('/api/updateAbout', controller.updateAbout);
 //delete a doc in the about collection
 router.post('/api/deleteAbout', controller.deleteAbout);
 
+//query a doc in the about collection
+router.post('/api/queryAbout', controller.queryAbout);
+
+
 /*---------------------------------------------------------------------*/
 
 
@@ -46,6 +50,9 @@ router.post('/api/updateInfo', controller.updateInfo);
 
 //delete a doc in the info collection
 router.post('/api/deleteInfo', controller.deleteInfo);
+
+//query a doc in the info collection
+router.post('/api/queryInfo', controller.queryInfo);
 
 /*=====  End of routs  ======*/
 
