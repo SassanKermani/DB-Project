@@ -64,14 +64,16 @@ const apiEndpoints = {
 		'/api/readAbout' : 'get rout sends all docs in about collection',
 		'/api/creatAbout' : 'post rout creat new doc in about collection',
 		'/api/updateAbout' : 'post rout update a doc in about collection based on id',
-		'/api/deleteAbout' : 'post route delete a doc in about collection based on id'
+		'/api/deleteAbout' : 'post route delete a doc in about collection based on id',
+		'/api/queryAbout' : 'post route query search for doc in the about collection'
 	},
 
 	'info collection' :{
 		'/api/readInfo' : 'get rout sends all docs in info collection',
 		'/api/creatInfo' : 'post rout creat new doc in info collection',
 		'/api/updateInfo' : 'post rout update a doc in info collection based on id',
-		'/api/deleteInfo' : 'post route delete a doc in info collection based on id'
+		'/api/deleteInfo' : 'post route delete a doc in info collection based on id',
+		'/api/queryInfo' : 'post route query search for doc in the info collection'
 	}
 
 

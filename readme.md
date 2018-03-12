@@ -13,7 +13,7 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - (DONE)build a full crud for about
 - (DONE)build a full crud for info
 - (DONE)make a genral purpus query for the about collection
-- make a genral purpus query for the info collection
+- (DONE)make a genral purpus query for the info collection
 
 # Nameing convention
 

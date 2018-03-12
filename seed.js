@@ -35,18 +35,18 @@ const newThingInDb = {
 
 ////////////////////////////////////////////////////////
 
-// MongoClient.connect(url, function(err, db) {
-//   if (err) throw err;
-//   var dbo = db.db(nameOfDb);
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db(nameOfDb);
 
-//   dbo.collection(infoCollection).drop();
+  dbo.collection(infoCollection).drop();
 
-// });
+});
 
-// MongoClient.connect(url, function(err, db) {
-//   if (err) throw err;
-//   var dbo = db.db(nameOfDb);
+MongoClient.connect(url, function(err, db) {
+  if (err) throw err;
+  var dbo = db.db(nameOfDb);
 
-//   dbo.collection(aboutCollection).drop();
+  dbo.collection(aboutCollection).drop();
 
-// });
+});

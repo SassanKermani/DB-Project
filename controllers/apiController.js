@@ -99,15 +99,15 @@ const creatAbout = (req, res)=>{
 				dbo.collection(aboutCollection).insertOne(newThingInDb, function(err, res){
 					if (err) throw err;
 					// console.log('insertOne into the infoCollection');
+					res.send(newThingInDb);
 				db.close();
 				});
 			});
-			res.send(newThingInDb);
 		}else{
 			res.send('this feild is already in the db');			
 		}
 
-		res.send('it broke');
+		//res.send('it broke');
 	});
 
 };
@@ -250,7 +250,7 @@ const queryAbout = (req, res)=>{
 		MongoClient.connect(url, function(err, db){
 			if (err) throw err;
 			let dbo = db.db(nameOfDb);
-			dbo.collection(aboutCollection).find(query).toArray(function(err, result){
+			dbo.collection(aboutCollection).find(query).toArray(function(err, result) {
 				if (err) throw err;
 				// console.log(result);
 				resolve(result);
@@ -260,7 +260,12 @@ const queryAbout = (req, res)=>{
 	});
 
 	tempPromis.then((tempVar) =>{
-		res.send(tempVar);
+		console.log(query);
+
+		res.send({
+			"query" : query,
+			"results" : tempVar
+		});
 	});
 
 }
@@ -340,6 +345,7 @@ const creatInfo = (req, res)=>{
 				dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
 					if (err) throw err;
 					// console.log('insertOne into the infoCollection');
+					// res.send(newThingInDb);
 				db.close();
 				});
 			});
@@ -347,7 +353,7 @@ const creatInfo = (req, res)=>{
 		}
 
 	});
-	res.send('it broke');
+	// res.send('it broke');
 }
 
 /*----------  Upadte Info  ----------*/
@@ -479,6 +485,15 @@ const queryInfo = (req, res)=>{
 	* run though a for loop to get all about docs
 	* see if there is anything in any of the about docs
 	* do the search
+	{
+		id : ,
+		doc{
+			" " : " ",
+			.
+			.
+			.
+		} 
+	}
 	*/
 
 	let tempPromis = new Promise((resolve, reject) =>{
@@ -494,8 +509,38 @@ const queryInfo = (req, res)=>{
 	});
 
 	tempPromis.then((tempVar)=>{
-		res.send(tempVar);
+
+		let query = {};
+
+		if(req.body.id != undefined || req.body.id != null ){	
+			query._id = ObjectId(req.body.id)
+		}
+			
+		for(let i = 0; i < tempVar.length; i++){
+			if(req.body[tempVar[i].name] != null || req.body[tempVar[i].name] != undefined){
+				query[tempVar[i].name] = req.body[tempVar[i].name];
+			}
+		}
+
 		
+
+		let data;
+
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(infoCollection).find(query).toArray(function(err, result){
+				if (err) throw err;
+				data = result;
+				res.send({
+					"query" : query,
+					"results" : result
+				});
+				// console.log(result);
+		    	db.close();
+			});
+		});
+
 	})
 
 }
