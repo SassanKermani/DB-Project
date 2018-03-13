@@ -23,7 +23,7 @@ const
 const apiRouter = require('./config/apiRoutes.js');
 
 //conecting to the router
-app.use(apiRouter);
+app.use('/api', apiRouter);
 
 //defult rout
 app.get('/*', function(req, res){

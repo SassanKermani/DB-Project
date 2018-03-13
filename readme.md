@@ -10,10 +10,14 @@ build a mongo db that uses one collectin as a schema for the other collection.
 
 # list o shit 
 - set up so user needs an api key to get in
-- (DONE)build a full crud for about
-- (DONE)build a full crud for info
-- (DONE)make a genral purpus query for the about collection
-- (DONE)make a genral purpus query for the info collection
+
+- build a full crud for about
+
+- build a full crud for info
+
+- make a genral purpus query for the about collection
+
+- make a genral purpus query for the info collection
 
 # Nameing convention
 
