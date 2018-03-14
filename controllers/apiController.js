@@ -247,52 +247,59 @@ const deleteConfig = (req, res)=>{
 /*----------  Query Config  ----------*/
 
 const queryConfig = (req, res)=>{
-	/*
-	* see if there is an id
-	* see if there is a name
-	* see if there is a dataType 
-	* do the search
-	req.body = {
-		id : ,
-		name : ,
-		dataType : ,
-	}
-	*/
+
+	query = {};
 
 	let tempPromis = new Promise((resolve, reject) =>{
 
-		query = {};
+		if(req.body.tabal != undefined || req.body.tabal != null ){
+			if(req.body.tabal.length != 0){
+				tabal = "config_" + req.body.tabal;
+				// console.log("tabal" + tabal)
 
-		if(req.body.id != null || req.body.id != undefined){
-			query._id = ObjectId(req.body.id);
-		}
-		if(req.body.name != null || req.body.name != undefined){
-			query.name = req.body.name;
-			console.log('yep');
-		}
-		if(req.body.dataType != null || req.body.dataType != undefined){
-			query.dataType = req.body.dataType;
-		}
+				if(req.body.id != null || req.body.id != undefined){
+					query._id = ObjectId(req.body.id);
+				}
 
-		MongoClient.connect(url, function(err, db){
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			dbo.collection(aboutCollection).find(query).toArray(function(err, result) {
-				if (err) throw err;
-				// console.log(result);
-				resolve(result);
-		    	db.close();
-			});
-		});
+				if(req.body.doc != null || req.body.doc != undefined){
+					if(req.body.doc.name != null || req.body.doc.name != undefined){
+						query.name = req.body.doc.name;
+						console.log('yep');
+					}
+					if(req.body.doc.dataType != null || req.body.doc.dataType != undefined){
+						query.dataType = req.body.doc.dataType;
+					}
+				}
+
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db(nameOfDb);
+					dbo.collection(tabal).find(query).toArray(function(err, result) {
+						if (err) throw err;
+						// console.log(result);
+						resolve(result);
+				    	db.close();
+					});
+				});
+
+			}else resolve(null);
+		}else resolve(null);
+
 	});
 
 	tempPromis.then((tempVar) =>{
-		console.log(query);
+		
+		if(tempVar != null){
 
-		res.send({
-			"query" : query,
-			"results" : tempVar
-		});
+			// console.log(query);
+
+			res.send({
+				"query" : query,
+				"results" : tempVar
+			});
+
+		}else res.send('req.body.tabal is undefined or null');
+
 	});
 
 }
