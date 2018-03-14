@@ -18,10 +18,11 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - (DONE)make a genral purpus query for the info collection
 
 - fix nameing convention with req.body 
-		- creat				- creat
+done	- creat				- creat
 done	- read				- read
-		- update			- update
-		- delete			- delete
+done	- update			- update
+done	- delete			- delete
+		- query				- query
 - change about to config && config to < routFile >
 
 ### db stuff
@@ -49,7 +50,7 @@ schema is based off of the documents in the about collection
 		//this is wehre a query will be for seaching a doc
 	},
 	id : <  >,
-	collection : <  >
+	table : <  > //collection
 }
 
 # boroken things
