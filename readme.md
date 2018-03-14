@@ -9,17 +9,20 @@
 build a mongo db that uses one collectin as a schema for the other collection.
 
 # list o shit 
+
+
 - set up so user needs an api key to get in
+- (DONE)build a full crud for about
+- (DONE)build a full crud for info
+- (DONE)make a genral purpus query for the about collection
+- (DONE)make a genral purpus query for the info collection
 
-- build a full crud for about
-
-- build a full crud for info
-
-- make a genral purpus query for the about collection
-
-- make a genral purpus query for the info collection
-
-# Nameing convention
+- fix nameing convention with req.body 
+		- creat				- creat
+done	- read				- read
+		- update			- update
+		- delete			- delete
+- change about to config && config to < routFile >
 
 ### db stuff
 name Of db 			= 'ancon'
@@ -37,24 +40,16 @@ schema is based off of the documents in the about collection
 	dataType : < string >
 }
 
-* udate about doc req.body
+* req.body
 {
-	id: < id >
-	newDoc : {
-		name : < string >,
-		dataType : < string >
-	}
-}
-
-* update info doc req.body
-{
-	id : < id >
-	newDoc : {
-		< thing > : < thing >,
-		.
-		. 
-		.
-	}
+	doc : {
+		//this is where a new or updated doc will be
+	},
+	query{
+		//this is wehre a query will be for seaching a doc
+	},
+	id : <  >,
+	collection : <  >
 }
 
 # boroken things
