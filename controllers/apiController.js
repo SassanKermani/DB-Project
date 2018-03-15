@@ -550,7 +550,7 @@ const deleteInfo = (req, res)=>{
 
 }
 
-/*----------  `Query` Info  ----------*/
+/*----------  Query Info  ----------*/
 
 const queryInfo = (req, res)=>{
 	/*
@@ -569,50 +569,67 @@ const queryInfo = (req, res)=>{
 	}
 	*/
 
+	let tabal;
+
 	let tempPromis = new Promise((resolve, reject) =>{
-		MongoClient.connect(url, function(err, db){
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
-				if (err) throw err;
-				resolve(result);
-		    	db.close();
-			});
-		});
+		if(req.body.tabal != undefined || req.body.tabal != null ){
+			if(req.body.tabal.length != 0){
+				tabal = req.body.tabal;
+				console.log(tabal);
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db(nameOfDb);
+					dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+						if (err) throw err;
+						//console.log(result);
+						resolve(result);
+				    	db.close();
+					});
+				});
+			}else resolve(null); 
+		}else resolve(null); 
 	});
 
 	tempPromis.then((tempVar)=>{
 
-		let query = {};
+		if(tempVar != null){
 
-		if(req.body.id != undefined || req.body.id != null ){	
-			query._id = ObjectId(req.body.id)
-		}
-			
-		for(let i = 0; i < tempVar.length; i++){
-			if(req.body[tempVar[i].name] != null || req.body[tempVar[i].name] != undefined){
-				query[tempVar[i].name] = req.body[tempVar[i].name];
+			let query = {};
+
+			if(req.body.id != undefined || req.body.id != null ){	
+				query._id = ObjectId(req.body.id)
 			}
-		}
+			
+			if(req.body.doc != undefined || req.body.doc != null){
+				for(let i = 0; i < tempVar.length; i++){
+					if(req.body.doc[tempVar[i].name] != null || req.body.doc[tempVar[i].name] != undefined){
+						query[tempVar[i].name] = req.body.doc[tempVar[i].name];
+					}
+				}
+			}
 
-		
+			
 
-		let data;
+			let data;
 
-		MongoClient.connect(url, function(err, db){
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			dbo.collection(infoCollection).find(query).toArray(function(err, result){
+			MongoClient.connect(url, function(err, db){
 				if (err) throw err;
-				data = result;
-				res.send({
-					"query" : query,
-					"results" : result
+				let dbo = db.db(nameOfDb);
+				dbo.collection(tabal).find(query).toArray(function(err, result){
+					if (err) throw err;
+					data = result;
+					res.send({
+						"query" : query,
+						"results" : result
+					});
+					// console.log(result);
+			    	db.close();
 				});
-				// console.log(result);
-		    	db.close();
 			});
-		});
+
+		}else{
+			req.send('req.body.tabal is undefined or null');
+		}
 
 	})
 

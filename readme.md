@@ -22,7 +22,7 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - done	 read	|	done	read
 - done	 update	|	done	update
 - done	 delete	|	done	delete
-- done	 query	|			query
+- done	 query	|	doen	query
 
 - change about to config && config to < routFile >
 
