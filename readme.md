@@ -55,6 +55,6 @@ schema is based off of the documents in the about collection
 }
 
 # boroken things
-- in the creatAbout you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... 
+- in the creatConfig you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... 
 
 # ideas
