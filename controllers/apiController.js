@@ -521,27 +521,33 @@ const deleteInfo = (req, res)=>{
 	let deleteIsGo = false;
 	let query;
 
-	if(req.body.id != null || req.body.id != undefined){
-		deleteIsGo = true;
-		query = { _id : ObjectId(req.body.id) };
-	}else{
-		res.send('id is null or undefined');
-	}
+	if(req.body.tabal != undefined || req.body.tabal != null ){
+		if(req.body.tabal.length != 0){
+			tabal = req.body.tabal;
+			console.log("tabal" + tabal)
 
-	if(deleteIsGo === true){
-		MongoClient.connect(url, function(err, db) {
-			if (err) throw err;
-			var dbo = db.db(nameOfDb);
-			dbo.collection(infoCollection).deleteOne(query, function(err, obj) {
-				if (err) throw err;
-				console.log("1 document deleted");
-				db.close();
-			});
-		});
-		res.send('you just deleted that thing and it can not be restored ever');	
-	}else{
-		res.snd('you broke it')
-	}
+			if(req.body.id != null || req.body.id != undefined){
+				deleteIsGo = true;
+				query = { _id : ObjectId(req.body.id) };
+			}else{
+				res.send('id is null or undefined');
+			}
+
+			if(deleteIsGo === true){
+				MongoClient.connect(url, function(err, db) {
+					if (err) throw err;
+					var dbo = db.db(nameOfDb);
+					dbo.collection(tabal).deleteOne(query, function(err, obj) {
+						if (err) throw err;
+						console.log("1 document deleted");
+						db.close();
+					});
+				});
+				res.send('you just deleted that thing and it can not be restored ever');	
+			}else res.send('you broke it');
+		}else res.send("req.body.tabal is undefined or null");
+	}else res.send("req.body.tabal is undefined or null");
+
 }
 
 /*----------  `Query` Info  ----------*/
