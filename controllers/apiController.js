@@ -311,20 +311,28 @@ const queryConfig = (req, res)=>{
 const readInfo = (req, res)=>{
 
 	let tempPromis = new Promise((resolve, reject) =>{
-		MongoClient.connect(url, function(err, db){
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			dbo.collection(infoCollection).find({}).toArray(function(err, result){
-				if (err) throw err;
-				// console.log(result);
-				resolve(result);
-		    	db.close();
-			});
-		});
+		if(req.body.tabal != undefined || req.body.tabal != null ){
+			if(req.body.tabal.length != 0){
+				let tabal = req.body.tabal;
+				console.log(tabal);
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db(nameOfDb);
+					dbo.collection(tabal).find({}).toArray(function(err, result){
+						if (err) throw err;
+						//console.log(result);
+						resolve(result);
+				    	db.close();
+					});
+				});
+			}else resolve(null); 
+		}else resolve(null); 
 	});
 
 	tempPromis.then((tempVar) =>{
-		res.send(tempVar);
+		if( tempVar != null){
+			res.send(tempVar);
+		}else res.send("req.body.tabal is undefined or null");
 	});
 
 };
@@ -332,59 +340,77 @@ const readInfo = (req, res)=>{
 /*----------  Create Info   ----------*/
 const creatInfo = (req, res)=>{
 
+	let tabal;
+
 	let tempPromis = new Promise((resolve, reject) =>{
-		MongoClient.connect(url, function(err, db){
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
-				if (err) throw err;
-				//console.log(result);
-				resolve(result);
-		    	db.close();
-			});
-		});
+		if(req.body.tabal != undefined || req.body.tabal != null ){
+			if(req.body.tabal.length != 0){
+				tabal = req.body.tabal;
+				console.log(tabal);
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db(nameOfDb);
+					dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+						if (err) throw err;
+						//console.log(result);
+						resolve(result);
+				    	db.close();
+					});
+				});
+			}else resolve(null); 
+		}else resolve(null); 
 	});
 
 	tempPromis.then( (tempVar)=>{
 		//res.send(tempVar);
 
-		let newThingInDb = {};
-		let insertIsGo = true;
+		console.log('tempVar');
+		console.log(tempVar)
 
-		for(let i = 0; i < tempVar.length; i++){
+		if(tempVar != null){
 
-			// console.log('tempVar[i].name');
-			// console.log(tempVar[i].name);
+			let newThingInDb = {};
+			let insertIsGo = true;
 
-			//console.log('hotSecVar');
-			// console.log(hotSecVar);
+			for(let i = 0; i < tempVar.length; i++){
 
-			if(req.body[tempVar[i].name] != undefined ){
-				if( typeof req.body[tempVar[i].name] === tempVar[i].dataType ){
-					newThingInDb[tempVar[i].name] = req.body[tempVar[i].name];
-				}else{
-					insertIsGo = false;
-					res.send(`datatype of ${tempVar[i].name} is not correct`);
+				console.log('tempVar[i].name');
+				console.log(tempVar[i].name);
+
+				// console.log('hotSecVar');
+				// console.log(hotSecVar);
+
+				if(req.body.doc[tempVar[i].name] != undefined  || req.body.doc[tempVar[i].name] != null){
+					if( typeof req.body.doc[tempVar[i].name] === tempVar[i].dataType ){
+						newThingInDb[tempVar[i].name] = req.body.doc[tempVar[i].name];
+						insertIsGo = true;
+					}else{
+						insertIsGo = false;
+						res.send(`datatype of ${tempVar[i].name} is not correct`);
+					}
+					
 				}
-				
+
 			}
 
-		}
+			console.log(newThingInDb);
 
-		if(insertIsGo === true){
-			MongoClient.connect(url, function(err, db) {
-				if (err) throw err;
-				let dbo = db.db(nameOfDb);
-				
-				dbo.collection(infoCollection).insertOne(newThingInDb, function(err, res){
+			if(insertIsGo === true){
+				MongoClient.connect(url, function(err, db) {
 					if (err) throw err;
-					// console.log('insertOne into the infoCollection');
-					// res.send(newThingInDb);
-				db.close();
+					let dbo = db.db(nameOfDb);
+					
+					dbo.collection(tabal).insertOne(newThingInDb, function(err, res){
+						if (err) throw err;
+						// console.log('insertOne into the infoCollection');
+						// res.send(newThingInDb);
+					db.close();
+					});
 				});
-			});
-			res.send(newThingInDb);
-		}
+				res.send(newThingInDb);
+			}
+
+		}else req.send('req.bod.tabal is null or undefined');
 
 	});
 	// res.send('it broke');
