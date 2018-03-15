@@ -421,36 +421,43 @@ const updateInfo = (req, res)=>{
 
 	let newThingInDb = {};
 	let updateIsGo = true;
+	let tabal;
 
 	let tempPromis = new Promise((resolve, reject) =>{
-		MongoClient.connect(url, function(err, db){
-			if (err) throw err;
-			let dbo = db.db(nameOfDb);
-			dbo.collection(aboutCollection).find({}).toArray(function(err, result){
-				if (err) throw err;
-				console.log('result');
-				console.log(result);
-				resolve(result);
-		    	db.close();
-			});
-		});
+		if(req.body.tabal != undefined || req.body.tabal != null ){
+			if(req.body.tabal.length != 0){
+				tabal = req.body.tabal;
+				console.log(tabal);
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db(nameOfDb);
+					dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+						if (err) throw err;
+						//console.log(result);
+						resolve(result);
+				    	db.close();
+					});
+				});
+			}else resolve(null); 
+		}else resolve(null); 
 	});
+
 
 	tempPromis.then((tempVar)=>{
 		for(let i = 0; i < tempVar.length; i++){
 
 			if(req.body.id != null || req.body.id != undefined){
-				if(req.body.newDoc != undefined && typeof req.body.newDoc === 'object' ){
-					if(req.body.newDoc[tempVar[i].name] != undefined ){
-						if( typeof req.body.newDoc[tempVar[i].name] === tempVar[i].dataType ){
-							newThingInDb[tempVar[i].name] = req.body.newDoc[tempVar[i].name];
+				if(req.body.doc != undefined && typeof req.body.doc === 'object' ){
+					if(req.body.doc[tempVar[i].name] != undefined ){
+						if( typeof req.body.doc[tempVar[i].name] === tempVar[i].dataType ){
+							newThingInDb[tempVar[i].name] = req.body.doc[tempVar[i].name];
 						}else{
 							res.send(`datatype of ${tempVar[i].name} is not correct`);
 							updateIsGo = false;
 						}
 					}
 				}else{
-					res.send(`the req.body.newDoc is undefined or is not of type object`);
+					res.send(`the req.body.doc is undefined or is not of type object`);
 					updateIsGo = false;
 				}
 			}else{
@@ -461,8 +468,8 @@ const updateInfo = (req, res)=>{
 		}
 		// console.log('req.body.id');
 		// console.log(req.body.id);
-		// console.log('req.body.newDoc');
-		// console.log(req.body.newDoc);
+		// console.log('req.body.doc');
+		// console.log(req.body.doc);
 		// console.log('newThingInDb');
 		// console.log(newThingInDb);
 		// res.send(newThingInDb);
@@ -481,7 +488,7 @@ const updateInfo = (req, res)=>{
 			MongoClient.connect(url, function(err, db){
 				if (err) throw err;
 				let dbo = db.db(nameOfDb);
-				dbo.collection(infoCollection).updateOne(query, {$set: newThingInDb}, function(err, res) {
+				dbo.collection(tabal).updateOne(query, {$set: newThingInDb}, function(err, res) {
 					if (err) throw err;
 					console.log("1 document updated");
 					db.close();

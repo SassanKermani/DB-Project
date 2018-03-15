@@ -20,7 +20,7 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - fix nameing convention with req.body 
 - done	 creat	|	done	creat
 - done	 read	|	done	read
-- done	 update	|			update
+- done	 update	|	done	update
 - done	 delete	|			delete
 - done	 query	|			query
 
@@ -50,7 +50,7 @@ schema is based off of the documents in the about collection
 	query{
 		//this is wehre a query will be for seaching a doc
 	},
-	id : <  >,
+	id : <  >, //id of the thing you want to mess with
 	table : <  > //collection
 }
 
