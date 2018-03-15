@@ -24,6 +24,10 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - done	 delete	|	done	delete
 - done	 query	|	doen	query
 
+- ok so i need to set up a way of telling what is conected to what and by what.
+basicly a way to track public and forin keys, somtihig that will self update...
+this is going to be hard and cick myass repedtudly. 
+
 - change about to config && config to < routFile >
 
 ### db stuff
