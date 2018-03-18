@@ -27,16 +27,14 @@ const readConfig = (req, res)=>{
 
 	if( go != null ){
 
-		getConfigTable(req.body.tabal).then(function(foo) {
+		getConfigTable(req.body.talbe).then(function(foo) {
 			// console.log("foo");
 			// console.log(foo);
 			// console.log("");
 			res.send(foo)
 		})
 
-	}else{
-		res.send('req.bod.tabal is undefined or null');
-	}
+	}else res.send('req.bod.talbe is undefined or null');
 
 };
 
@@ -45,138 +43,102 @@ const creatConfig = (req, res)=>{
 
 	console.log("creatConfig");
 
-	if( docIsGo(req.body) != null){
-		if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string'){
-			if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string'){
+	let go = tableIsGo(req.body);
 
-				getConfigTable(req.body.tabal).then(function(foo) {
-					// console.log("foo");
-					// console.log(foo);
-					// console.log("");
-					// res.send(foo);
+	if( go != null ){
+		if( docIsGo(req.body) != null){
+			if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string'){
+				if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string'){
 
-					let doTheThing = true;
+					getConfigTable(req.body.talbe).then(function(foo) {
+						// console.log("foo");
+						// console.log(foo);
+						// console.log("");
+						// res.send(foo);
 
-					for(let i = 0; i < foo.length; i++){
+						let doTheThing = true;
 
-						if(req.body.doc.name === foo[i].name){
-							doTheThing = false;
+						for(let i = 0; i < foo.length; i++){
+
+							if(req.body.doc.name === foo[i].name){
+								doTheThing = false;
+							}
+
 						}
 
-					}
+						let newThingInDb = {
+							'name' : req.body.doc.name,
+							'dataType' : req.body.doc.dataType
 
-					let newThingInDb = {
-						'name' : req.body.doc.name,
-						'dataType' : req.body.doc.dataType
+						}
 
-					}
+						let talbe = "config_" + req.body.talbe
 
-					if(doTheThing === true){
-						MongoClient.connect(url, function(err, db) {
-							if (err) throw err;
-							let dbo = db.db(nameOfDb);
-							
-							dbo.collection("config_" + req.body.tabal).insertOne(newThingInDb, function(err, res){
+						console.log('talbe');
+						console.log(talbe);
+
+						if(doTheThing === true){
+							MongoClient.connect(url, function(err, db) {
 								if (err) throw err;
-								console.log('insertOne into the infoCollection');
-								db.close();
+								let dbo = db.db(nameOfDb);
+								
+								dbo.collection(talbe).insertOne(newThingInDb, function(err, res){
+									if (err) throw err;
+									console.log('insertOne into the infoCollection');
+									db.close();
+								});
+								res.send(newThingInDb);
 							});
-							res.send(newThingInDb);
-						});
-					}else res.send('thats alread in the tabal');
+						}else res.send('thats alread in the talbe');
 
-				})
+					})
 
-			}else res.send('req.body.doc.dataType is null or undefined');	
-		}else res.send('req.body.doc.name is null or undefined');
-	}else res.send('req.body.doc is undefined or null');
+				}else res.send('req.body.doc.dataType is null or undefined');	
+			}else res.send('req.body.doc.name is null or undefined');
+		}else res.send('req.body.doc is undefined or null');
+	}else res.send('req.body.talbe is not undefined or null');
 
 };
 
 /*----------  Update Config  ----------*/
 const updateConfig = (req, res)=>{
-	
-	// let tabal;
 
-	// let tempPromis = new Promise((resolve, reject) =>{
-		
-	// 	if(req.body.tabal != undefined || req.body.tabal != null ){
-	// 		if(req.body.tabal.length != 0){
-	// 			tabal = "config_" + req.body.tabal;
-	// 			console.log("tabal" + tabal)
+	let go = tableIsGo(req.body);
 
 
-	// 			MongoClient.connect(url, function(err, db) {
-	// 				if (err) throw err;
-	// 				var dbo = db.db(nameOfDb);
-	// 				dbo.collection( tabal ).find({}).toArray(function(err, result) {
-	// 					if (err) throw err;
-	// 					//console.log(result);
-	// 					resolve(result);
-	// 					db.close();
-	// 				});
-	// 			});
-	// 		}else resolve(null);
-	// 	}else resolve(null);
-	// });
+	if( go != null){
+		if( idIsGo(req.body) != null){
+			let query = { _id : ObjectId(req.body.id) };
+			if(docIsGo(req.body) != null){
 
-	// let doTheThing = false;
-	// let doTheThing2 = true;
+				let newThingInDb;
 
-	// tempPromis.then((tempVar) =>{
+				if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string'){
+					if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string'){
+							newThingInDb =
+							{
+								'name' : req.body.doc.name,
+								'dataType' : req.body.doc.dataType
+							};
 
-	// 	if(tempVar != null){
-	// 		if( req.body.id != null || req.body.id != undefined ){
-	// 			if(req.body.doc != undefined && typeof req.body.doc === 'object' ){
-	// 				if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string' ){
-	// 					console.log('name is good');
-	// 					if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string' ){
-	// 						console.log('dataType is good');
-	// 						doTheThing = true
-	// 						for(let i = 0; i < tempVar.length; i++){
-	// 							if(req.body.doc.name === tempVar[i].name){
-	// 								doTheThing2 = false;
-	// 							}
-	// 						}
+							MongoClient.connect(url, function(err, db){
+								if (err) throw err;
+								let dbo = db.db(nameOfDb);
+								dbo.collection("config_" + req.body.talbe).updateOne(query, {$set: newThingInDb}, function(err, res) {
+									if (err) throw err;
+									console.log("1 document updated");
+									db.close();
+								});
+							});	
 
-	// 					}else res.send('err the dataType was eather null or not of type string');
-	// 				}else res.send('err the name was eather null or not of type string')
-	// 			}else res.send('req.body.doc is undefined or not an object');
-	// 		}else res.send('req.body.id is null')
+							res.send(newThingInDb);
 
-	// 		if(doTheThing == true && doTheThing2 == true){
+					}else res.send('req.body.doc.dataType is null or undefined or not of type string')
+				}else res.send('req.body.doc.name is null or undefined or not of type string')
 
-	// 			console.log("in the spot");
-
-	// 			let newThingInDb =
-	// 			{
-	// 				'name' : req.body.doc.name,
-	// 				'dataType' : req.body.doc.dataType
-	// 			};
-
-	// 			let query = { _id : ObjectId(req.body.id) };
-
-	// 			MongoClient.connect(url, function(err, db){
-	// 				if (err) throw err;
-	// 				let dbo = db.db(nameOfDb);
-	// 				dbo.collection(tabal).updateOne(query, {$set: newThingInDb}, function(err, res) {
-	// 					if (err) throw err;
-	// 					console.log("1 document updated");
-	// 					db.close();
-	// 				});
-	// 			});
-				
-	// 			res.send(newThingInDb);
-			
-	// 		}else res.send('it broke');
-	// 	}else res.send("req.body.tabal is undefined or null");
-	// });
-
-	if( idIsGo(req.body) != null){
-
-	}else{
-		res.send('req.bod.id is null or undefined');
-	}
+			}else res.send('req.body.doc is null or undefined');
+		}else res.send('req.bod.id is null or undefined');
+	}else res.send('req.bod.talbe is null or undefined');
 
 }
 
@@ -186,10 +148,10 @@ const deleteConfig = (req, res)=>{
 	let deleteIsGo = false;
 	let query;
 
-	if(req.body.tabal != undefined || req.body.tabal != null ){
-		if(req.body.tabal.length != 0){
-			tabal = "config_" + req.body.tabal;
-			console.log("tabal" + tabal)
+	if(req.body.talbe != undefined || req.body.talbe != null ){
+		if(req.body.talbe.length != 0){
+			talbe = "config_" + req.body.talbe;
+			console.log("talbe" + talbe)
 
 			if(req.body.id != null || req.body.id != undefined){
 				deleteIsGo = true;
@@ -202,7 +164,7 @@ const deleteConfig = (req, res)=>{
 				MongoClient.connect(url, function(err, db) {
 					if (err) throw err;
 					var dbo = db.db(nameOfDb);
-					dbo.collection(tabal).deleteOne(query, function(err, obj) {
+					dbo.collection(talbe).deleteOne(query, function(err, obj) {
 						if (err) throw err;
 						console.log("1 document deleted");
 						db.close();
@@ -210,8 +172,8 @@ const deleteConfig = (req, res)=>{
 				});
 				res.send('you just deleted that thing and it can not be restored ever');	
 			}else res.send('you broke it');
-		}else res.send("req.body.tabal is undefined or null");
-	}else res.send("req.body.tabal is undefined or null");
+		}else res.send("req.body.talbe is undefined or null");
+	}else res.send("req.body.talbe is undefined or null");
 
 }
 
@@ -223,10 +185,10 @@ const queryConfig = (req, res)=>{
 
 	let tempPromis = new Promise((resolve, reject) =>{
 
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				tabal = "config_" + req.body.tabal;
-				// console.log("tabal" + tabal)
+		if(req.body.talbe != undefined || req.body.talbe != null ){
+			if(req.body.talbe.length != 0){
+				talbe = "config_" + req.body.talbe;
+				// console.log("talbe" + talbe)
 
 				if(req.body.id != null || req.body.id != undefined){
 					query._id = ObjectId(req.body.id);
@@ -245,7 +207,7 @@ const queryConfig = (req, res)=>{
 				MongoClient.connect(url, function(err, db){
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
-					dbo.collection(tabal).find(query).toArray(function(err, result) {
+					dbo.collection(talbe).find(query).toArray(function(err, result) {
 						if (err) throw err;
 						// console.log(result);
 						resolve(result);
@@ -269,7 +231,7 @@ const queryConfig = (req, res)=>{
 				"results" : tempVar
 			});
 
-		}else res.send('req.body.tabal is undefined or null');
+		}else res.send('req.body.talbe is undefined or null');
 
 	});
 
@@ -281,14 +243,14 @@ const queryConfig = (req, res)=>{
 const readInfo = (req, res)=>{
 
 	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				let tabal = req.body.tabal;
-				console.log(tabal);
+		if(req.body.talbe != undefined || req.body.talbe != null ){
+			if(req.body.talbe.length != 0){
+				let talbe = req.body.talbe;
+				console.log(talbe);
 				MongoClient.connect(url, function(err, db){
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
-					dbo.collection(tabal).find({}).toArray(function(err, result){
+					dbo.collection(talbe).find({}).toArray(function(err, result){
 						if (err) throw err;
 						//console.log(result);
 						resolve(result);
@@ -302,7 +264,7 @@ const readInfo = (req, res)=>{
 	tempPromis.then((tempVar) =>{
 		if( tempVar != null){
 			res.send(tempVar);
-		}else res.send("req.body.tabal is undefined or null");
+		}else res.send("req.body.talbe is undefined or null");
 	});
 
 };
@@ -310,17 +272,17 @@ const readInfo = (req, res)=>{
 /*----------  Create Info   ----------*/
 const creatInfo = (req, res)=>{
 
-	let tabal;
+	let talbe;
 
 	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				tabal = req.body.tabal;
-				console.log(tabal);
+		if(req.body.talbe != undefined || req.body.talbe != null ){
+			if(req.body.talbe.length != 0){
+				talbe = req.body.talbe;
+				console.log(talbe);
 				MongoClient.connect(url, function(err, db){
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
-					dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+					dbo.collection('config_' + talbe).find({}).toArray(function(err, result){
 						if (err) throw err;
 						//console.log(result);
 						resolve(result);
@@ -370,7 +332,7 @@ const creatInfo = (req, res)=>{
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
 					
-					dbo.collection(tabal).insertOne(newThingInDb, function(err, res){
+					dbo.collection(talbe).insertOne(newThingInDb, function(err, res){
 						if (err) throw err;
 						// console.log('insertOne into the infoCollection');
 						// res.send(newThingInDb);
@@ -380,7 +342,7 @@ const creatInfo = (req, res)=>{
 				res.send(newThingInDb);
 			}
 
-		}else req.send('req.bod.tabal is null or undefined');
+		}else req.send('req.bod.talbe is null or undefined');
 
 	});
 	// res.send('it broke');
@@ -391,17 +353,17 @@ const updateInfo = (req, res)=>{
 
 	let newThingInDb = {};
 	let updateIsGo = true;
-	let tabal;
+	let talbe;
 
 	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				tabal = req.body.tabal;
-				console.log(tabal);
+		if(req.body.talbe != undefined || req.body.talbe != null ){
+			if(req.body.talbe.length != 0){
+				talbe = req.body.talbe;
+				console.log(talbe);
 				MongoClient.connect(url, function(err, db){
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
-					dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+					dbo.collection('config_' + talbe).find({}).toArray(function(err, result){
 						if (err) throw err;
 						//console.log(result);
 						resolve(result);
@@ -458,7 +420,7 @@ const updateInfo = (req, res)=>{
 			MongoClient.connect(url, function(err, db){
 				if (err) throw err;
 				let dbo = db.db(nameOfDb);
-				dbo.collection(tabal).updateOne(query, {$set: newThingInDb}, function(err, res) {
+				dbo.collection(talbe).updateOne(query, {$set: newThingInDb}, function(err, res) {
 					if (err) throw err;
 					console.log("1 document updated");
 					db.close();
@@ -491,10 +453,10 @@ const deleteInfo = (req, res)=>{
 	let deleteIsGo = false;
 	let query;
 
-	if(req.body.tabal != undefined || req.body.tabal != null ){
-		if(req.body.tabal.length != 0){
-			tabal = req.body.tabal;
-			console.log("tabal" + tabal)
+	if(req.body.talbe != undefined || req.body.talbe != null ){
+		if(req.body.talbe.length != 0){
+			talbe = req.body.talbe;
+			console.log("talbe" + talbe)
 
 			if(req.body.id != null || req.body.id != undefined){
 				deleteIsGo = true;
@@ -507,7 +469,7 @@ const deleteInfo = (req, res)=>{
 				MongoClient.connect(url, function(err, db) {
 					if (err) throw err;
 					var dbo = db.db(nameOfDb);
-					dbo.collection(tabal).deleteOne(query, function(err, obj) {
+					dbo.collection(talbe).deleteOne(query, function(err, obj) {
 						if (err) throw err;
 						console.log("1 document deleted");
 						db.close();
@@ -515,8 +477,8 @@ const deleteInfo = (req, res)=>{
 				});
 				res.send('you just deleted that thing and it can not be restored ever');	
 			}else res.send('you broke it');
-		}else res.send("req.body.tabal is undefined or null");
-	}else res.send("req.body.tabal is undefined or null");
+		}else res.send("req.body.talbe is undefined or null");
+	}else res.send("req.body.talbe is undefined or null");
 
 }
 
@@ -539,17 +501,17 @@ const queryInfo = (req, res)=>{
 	}
 	*/
 
-	let tabal;
+	let talbe;
 
 	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				tabal = req.body.tabal;
-				console.log(tabal);
+		if(req.body.talbe != undefined || req.body.talbe != null ){
+			if(req.body.talbe.length != 0){
+				talbe = req.body.talbe;
+				console.log(talbe);
 				MongoClient.connect(url, function(err, db){
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
-					dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+					dbo.collection('config_' + talbe).find({}).toArray(function(err, result){
 						if (err) throw err;
 						//console.log(result);
 						resolve(result);
@@ -585,7 +547,7 @@ const queryInfo = (req, res)=>{
 			MongoClient.connect(url, function(err, db){
 				if (err) throw err;
 				let dbo = db.db(nameOfDb);
-				dbo.collection(tabal).find(query).toArray(function(err, result){
+				dbo.collection(talbe).find(query).toArray(function(err, result){
 					if (err) throw err;
 					data = result;
 					res.send({
@@ -598,7 +560,7 @@ const queryInfo = (req, res)=>{
 			});
 
 		}else{
-			req.send('req.body.tabal is undefined or null');
+			req.send('req.body.talbe is undefined or null');
 		}
 
 	})
@@ -613,13 +575,13 @@ const queryInfo = (req, res)=>{
 
 // req.body.table is good
 const tableIsGo = (body)=>{
-	let tabal = null;
-	if(body.tabal != undefined && body.tabal != null ){
-		if(body.tabal.length != 0){
-			tabal = body.tabal; 
+	let talbe = null;
+	if(body.talbe != undefined && body.talbe != null ){
+		if(body.talbe.length != 0){
+			talbe = body.talbe; 
 		}
 	}
-	return tabal;
+	return talbe;
 }
 
 //req.body.doc is good
@@ -645,14 +607,14 @@ const idIsGo = (body)=>{
 }
 
 //Get Config Tabl
-const getConfigTable = (tabal)=>{
+const getConfigTable = (talbe)=>{
   
 	let promis = new Promise((resolve, reject)=>{
     
 		MongoClient.connect(url, function(err, db){
 			if (err) throw err;
 			let dbo = db.db('ancon');
-			dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+			dbo.collection('config_' + talbe).find({}).toArray(function(err, result){
 			if (err) throw err;
 			//console.log(result);
 			resolve(result);
