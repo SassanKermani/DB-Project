@@ -21,39 +21,16 @@ const infoCollection = 'info';
 /*----------  Read Config  ----------*/
 const readConfig = (req, res)=>{
 
-	// let tempPromis = new Promise((resolve, reject) =>{
-	// 	if(req.body.tabal != undefined || req.body.tabal != null ){
-	// 		if(req.body.tabal.length != 0){
-	// 			let tabal = 'config_' + req.body.tabal;
-	// 			console.log(tabal);
-	// 			MongoClient.connect(url, function(err, db){
-	// 				if (err) throw err;
-	// 				let dbo = db.db(nameOfDb);
-	// 				dbo.collection(tabal).find({}).toArray(function(err, result){
-	// 					if (err) throw err;
-	// 					//console.log(result);
-	// 					resolve(result);
-	// 			    	db.close();
-	// 				});
-	// 			});
-	// 		}else resolve(null); 
-	// 	}else resolve(null); 
-	// });
-
-	// tempPromis.then((tempVar) =>{
-	// 	if( tempVar != null){
-	// 		res.send(tempVar);
-	// 	}else res.send("req.body.tabal is undefined or null");
-	// });
+	console.log("readConfig");
 
 	let go = tableIsGo(req.body);
 
 	if( go != null ){
 
 		getConfigTable(req.body.tabal).then(function(foo) {
-			console.log("foo");
-			console.log(foo);
-			console.log("");
+			// console.log("foo");
+			// console.log(foo);
+			// console.log("");
 			res.send(foo)
 		})
 
@@ -65,89 +42,63 @@ const readConfig = (req, res)=>{
 
 /*----------  Creat Config  ----------*/
 const creatConfig = (req, res)=>{
-	// console.log('at the creatConfig function');
 
-	let tabal;
+	console.log("creatConfig");
 
-	let tempPromis = new Promise((resolve, reject) =>{
-		
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				tabal = "config_" + req.body.tabal;
-				console.log("tabal" + tabal)
+	if( docIsGo(req.body) != null){
+		if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string'){
+			if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string'){
 
+				getConfigTable(req.body.tabal).then(function(foo) {
+					// console.log("foo");
+					// console.log(foo);
+					// console.log("");
+					// res.send(foo);
 
-				MongoClient.connect(url, function(err, db) {
-					if (err) throw err;
-					var dbo = db.db(nameOfDb);
-					dbo.collection( tabal ).find({}).toArray(function(err, result) {
-						if (err) throw err;
-						//console.log(result);
-						resolve(result);
-						db.close();
-					});
-				});
-			}else resolve(null);
-		}else resolve(null);
-	});
+					let doTheThing = true;
 
-	let doTheThing = false;
-	let doTheThing2 = true;
+					for(let i = 0; i < foo.length; i++){
 
-	tempPromis.then((tempVar) =>{
-
-		if(tempVar != null){
-			if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string' ){
-				// console.log('name is good');
-				if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string' ){
-					// console.log('dataType is good');
-					doTheThing = true
-					for(let i = 0; i < tempVar.length; i++){
-						if(req.body.doc.name === tempVar[i].name){
-							doTheThing2 = false;
+						if(req.body.doc.name === foo[i].name){
+							doTheThing = false;
 						}
+
 					}
 
-				}else res.send('err the dataType was eather null or not of type string');
-			}else res.send('err the name was eather null or not of type string');
-		}else res.send("req.body.tabal is undefined or null");
+					let newThingInDb = {
+						'name' : req.body.doc.name,
+						'dataType' : req.body.doc.dataType
 
-		if(doTheThing == true && doTheThing2 == true){
+					}
 
-			// console.log(req.body)
-			// console.log('in the insert if')
+					if(doTheThing === true){
+						MongoClient.connect(url, function(err, db) {
+							if (err) throw err;
+							let dbo = db.db(nameOfDb);
+							
+							dbo.collection("config_" + req.body.tabal).insertOne(newThingInDb, function(err, res){
+								if (err) throw err;
+								console.log('insertOne into the infoCollection');
+								db.close();
+							});
+							res.send(newThingInDb);
+						});
+					}else{
+						res.send('thats alread in the tabal');
+					}
 
-			let newThingInDb =
-			{
-				'name' : req.body.doc.name,
-				'dataType' : req.body.doc.dataType
-			};
+				})
 
-			// console.log(newThingInDb);
-
-			MongoClient.connect(url, function(err, db) {
-				if (err) throw err;
-				let dbo = db.db(nameOfDb);
-				
-				dbo.collection(tabal).insertOne(newThingInDb, function(err, res){
-					if (err) throw err;
-					// console.log('insertOne into the infoCollection');
-					db.close();
-				});
-				res.send(newThingInDb);
-			});
-		}else res.send('this feild is already in the db');
-
-		//res.send('it broke');
-	});
+			}else res.send('req.body.doc.dataType is null or undefined');	
+		}else res.send('req.body.doc.name is null or undefined');
+	}else res.send('req.body.doc is undefined or null');
 
 };
 
 /*----------  Update Config  ----------*/
-
-let tabal;
-
 const updateConfig = (req, res)=>{
+	
+	let tabal;
 	
 	let tempPromis = new Promise((resolve, reject) =>{
 		
@@ -659,7 +610,7 @@ const queryInfo = (req, res)=>{
 // req.body.table is good
 const tableIsGo = (body)=>{
 	let tabal = null;
-	if(body.tabal != undefined || body.tabal != null ){
+	if(body.tabal != undefined && body.tabal != null ){
 		if(body.tabal.length != 0){
 			tabal = body.tabal; 
 		}
@@ -667,8 +618,28 @@ const tableIsGo = (body)=>{
 	return tabal;
 }
 
+//req.body.doc is good
+const docIsGo = (body)=>{
+	let doc = null;
+	if(body.doc != null || body.doc ){
+		if(typeof body.doc === 'object'){
+			doc = body.doc;
+		}
+	}
+	return doc;
+}
+
+//req.body.id is good
+const idIsGo = (body)=>{
+	let id = null;
+	if(body.id != null || body.id ){
+		id = body.id;
+	}
+	return id;
+}
+
 //Get Config Tabl
-let getConfigTable = (tabal)=>{
+const getConfigTable = (tabal)=>{
   
 	let promis = new Promise((resolve, reject)=>{
     
