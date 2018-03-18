@@ -17,33 +17,49 @@ const infoCollection = 'info';
 =            funcitons            =
 =================================*/
 
+
 /*----------  Read Config  ----------*/
 const readConfig = (req, res)=>{
 
-	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				let tabal = 'config_' + req.body.tabal;
-				console.log(tabal);
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection(tabal).find({}).toArray(function(err, result){
-						if (err) throw err;
-						//console.log(result);
-						resolve(result);
-				    	db.close();
-					});
-				});
-			}else resolve(null); 
-		}else resolve(null); 
-	});
+	// let tempPromis = new Promise((resolve, reject) =>{
+	// 	if(req.body.tabal != undefined || req.body.tabal != null ){
+	// 		if(req.body.tabal.length != 0){
+	// 			let tabal = 'config_' + req.body.tabal;
+	// 			console.log(tabal);
+	// 			MongoClient.connect(url, function(err, db){
+	// 				if (err) throw err;
+	// 				let dbo = db.db(nameOfDb);
+	// 				dbo.collection(tabal).find({}).toArray(function(err, result){
+	// 					if (err) throw err;
+	// 					//console.log(result);
+	// 					resolve(result);
+	// 			    	db.close();
+	// 				});
+	// 			});
+	// 		}else resolve(null); 
+	// 	}else resolve(null); 
+	// });
 
-	tempPromis.then((tempVar) =>{
-		if( tempVar != null){
-			res.send(tempVar);
-		}else res.send("req.body.tabal is undefined or null");
-	});
+	// tempPromis.then((tempVar) =>{
+	// 	if( tempVar != null){
+	// 		res.send(tempVar);
+	// 	}else res.send("req.body.tabal is undefined or null");
+	// });
+
+	let go = tableIsGo(req.body);
+
+	if( go != null ){
+
+		getConfigTable(req.body.tabal).then(function(foo) {
+			console.log("foo");
+			console.log(foo);
+			console.log("");
+			res.send(foo)
+		})
+
+	}else{
+		res.send('req.bod.tabal is undefined or null');
+	}
 
 };
 
@@ -634,11 +650,62 @@ const queryInfo = (req, res)=>{
 
 }
 
-/*---------------------------------------------------------------------------------------------------*/
-
-
-
 /*=====  End of funcitons  ======*/
+
+/*============================================================
+=            Rework of how logic is going to work            =
+============================================================*/
+
+// req.body.table is good
+const tableIsGo = (body)=>{
+	let tabal = null;
+	if(body.tabal != undefined || body.tabal != null ){
+		if(body.tabal.length != 0){
+			tabal = body.tabal; 
+		}
+	}
+	return tabal;
+}
+
+//Get Config Tabl
+let getConfigTable = (tabal)=>{
+  
+	let promis = new Promise((resolve, reject)=>{
+    
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db('ancon');
+			dbo.collection('config_' + tabal).find({}).toArray(function(err, result){
+			if (err) throw err;
+			//console.log(result);
+			resolve(result);
+			db.close();
+			});
+		});
+
+	});
+
+	return promis.then((result)=>{
+		// console.log("result");
+		// console.log(result);
+		// console.log("");
+		return result;
+	})
+
+};
+
+//this is an example of who to call this 
+
+// getConfigTable("people").then(function(foo) {
+// 	console.log("foo");
+// 	console.log(foo);
+// 	console.log("");
+// 	return foo;
+// })
+
+
+/*=====  End of Rework of how logic is going to work  ======*/
+
 
 /*----------  exports  ----------*/
 module.exports = {

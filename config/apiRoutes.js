@@ -75,6 +75,7 @@ const apiEndpoints = {
 		'/api/deleteInfo' : 'post route delete a doc in info collection based on id',
 		'/api/queryInfo' : 'post route query search for doc in the info collection'
 	}
+	
 
 
 }

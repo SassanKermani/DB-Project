@@ -1,0 +1,18 @@
+layout of functions being called
+
+table valad(){
+	
+	id valad(){
+		doc valad(){
+			
+		}
+		qery valad(){
+
+		}
+	}
+	
+	doc valad(){
+		
+	}
+
+}
