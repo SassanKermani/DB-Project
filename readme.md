@@ -64,5 +64,6 @@ schema is based off of the documents in the about collection
 # boroken things
 - in the creatConfig you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... 
 - need to rename the config folder its misleading, but I realy dont want to come up with a new naming convenion 
+ 
 
 # ideas

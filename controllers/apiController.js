@@ -83,9 +83,7 @@ const creatConfig = (req, res)=>{
 							});
 							res.send(newThingInDb);
 						});
-					}else{
-						res.send('thats alread in the tabal');
-					}
+					}else res.send('thats alread in the tabal');
 
 				})
 
@@ -98,81 +96,87 @@ const creatConfig = (req, res)=>{
 /*----------  Update Config  ----------*/
 const updateConfig = (req, res)=>{
 	
-	let tabal;
-	
-	let tempPromis = new Promise((resolve, reject) =>{
+	// let tabal;
+
+	// let tempPromis = new Promise((resolve, reject) =>{
 		
-		if(req.body.tabal != undefined || req.body.tabal != null ){
-			if(req.body.tabal.length != 0){
-				tabal = "config_" + req.body.tabal;
-				console.log("tabal" + tabal)
+	// 	if(req.body.tabal != undefined || req.body.tabal != null ){
+	// 		if(req.body.tabal.length != 0){
+	// 			tabal = "config_" + req.body.tabal;
+	// 			console.log("tabal" + tabal)
 
 
-				MongoClient.connect(url, function(err, db) {
-					if (err) throw err;
-					var dbo = db.db(nameOfDb);
-					dbo.collection( tabal ).find({}).toArray(function(err, result) {
-						if (err) throw err;
-						//console.log(result);
-						resolve(result);
-						db.close();
-					});
-				});
-			}else resolve(null);
-		}else resolve(null);
-	});
+	// 			MongoClient.connect(url, function(err, db) {
+	// 				if (err) throw err;
+	// 				var dbo = db.db(nameOfDb);
+	// 				dbo.collection( tabal ).find({}).toArray(function(err, result) {
+	// 					if (err) throw err;
+	// 					//console.log(result);
+	// 					resolve(result);
+	// 					db.close();
+	// 				});
+	// 			});
+	// 		}else resolve(null);
+	// 	}else resolve(null);
+	// });
 
-	let doTheThing = false;
-	let doTheThing2 = true;
+	// let doTheThing = false;
+	// let doTheThing2 = true;
 
-	tempPromis.then((tempVar) =>{
+	// tempPromis.then((tempVar) =>{
 
-		if(tempVar != null){
-			if( req.body.id != null || req.body.id != undefined ){
-				if(req.body.doc != undefined && typeof req.body.doc === 'object' ){
-					if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string' ){
-						console.log('name is good');
-						if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string' ){
-							console.log('dataType is good');
-							doTheThing = true
-							for(let i = 0; i < tempVar.length; i++){
-								if(req.body.doc.name === tempVar[i].name){
-									doTheThing2 = false;
-								}
-							}
+	// 	if(tempVar != null){
+	// 		if( req.body.id != null || req.body.id != undefined ){
+	// 			if(req.body.doc != undefined && typeof req.body.doc === 'object' ){
+	// 				if(req.body.doc.name != null && req.body.doc.name && typeof req.body.doc.name === 'string' ){
+	// 					console.log('name is good');
+	// 					if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string' ){
+	// 						console.log('dataType is good');
+	// 						doTheThing = true
+	// 						for(let i = 0; i < tempVar.length; i++){
+	// 							if(req.body.doc.name === tempVar[i].name){
+	// 								doTheThing2 = false;
+	// 							}
+	// 						}
 
-						}else res.send('err the dataType was eather null or not of type string');
-					}else res.send('err the name was eather null or not of type string')
-				}else res.send('req.body.doc is undefined or not an object');
-			}else res.send('req.body.id is null')
+	// 					}else res.send('err the dataType was eather null or not of type string');
+	// 				}else res.send('err the name was eather null or not of type string')
+	// 			}else res.send('req.body.doc is undefined or not an object');
+	// 		}else res.send('req.body.id is null')
 
-			if(doTheThing == true && doTheThing2 == true){
+	// 		if(doTheThing == true && doTheThing2 == true){
 
-				console.log("in the spot");
+	// 			console.log("in the spot");
 
-				let newThingInDb =
-				{
-					'name' : req.body.doc.name,
-					'dataType' : req.body.doc.dataType
-				};
+	// 			let newThingInDb =
+	// 			{
+	// 				'name' : req.body.doc.name,
+	// 				'dataType' : req.body.doc.dataType
+	// 			};
 
-				let query = { _id : ObjectId(req.body.id) };
+	// 			let query = { _id : ObjectId(req.body.id) };
 
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection(tabal).updateOne(query, {$set: newThingInDb}, function(err, res) {
-						if (err) throw err;
-						console.log("1 document updated");
-						db.close();
-					});
-				});
+	// 			MongoClient.connect(url, function(err, db){
+	// 				if (err) throw err;
+	// 				let dbo = db.db(nameOfDb);
+	// 				dbo.collection(tabal).updateOne(query, {$set: newThingInDb}, function(err, res) {
+	// 					if (err) throw err;
+	// 					console.log("1 document updated");
+	// 					db.close();
+	// 				});
+	// 			});
 				
-				res.send(newThingInDb);
+	// 			res.send(newThingInDb);
 			
-			}else res.send('it broke');
-		}else res.send("req.body.tabal is undefined or null");
-	});
+	// 		}else res.send('it broke');
+	// 	}else res.send("req.body.tabal is undefined or null");
+	// });
+
+	if( idIsGo(req.body) != null){
+
+	}else{
+		res.send('req.bod.id is null or undefined');
+	}
 
 }
 
@@ -633,7 +637,9 @@ const docIsGo = (body)=>{
 const idIsGo = (body)=>{
 	let id = null;
 	if(body.id != null || body.id ){
-		id = body.id;
+		if(body.id.length != 0){
+			id = body.id;
+		}
 	}
 	return id;
 }
