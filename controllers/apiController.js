@@ -145,35 +145,27 @@ const updateConfig = (req, res)=>{
 /*----------  Delete Config  ----------*/
 const deleteConfig = (req, res)=>{
 
-	let deleteIsGo = false;
-	let query;
+	let go = tableIsGo(req.body);
 
-	if(req.body.talbe != undefined || req.body.talbe != null ){
-		if(req.body.talbe.length != 0){
-			talbe = "config_" + req.body.talbe;
-			console.log("talbe" + talbe)
+	if( go != null){
+		if( idIsGo(req.body) != null){
 
-			if(req.body.id != null || req.body.id != undefined){
-				deleteIsGo = true;
-				query = { _id : ObjectId(req.body.id) };
-			}else{
-				res.send('id is null or undefined');
-			}
+			query = { _id : ObjectId(req.body.id) };
 
-			if(deleteIsGo === true){
-				MongoClient.connect(url, function(err, db) {
+			MongoClient.connect(url, function(err, db) {
+				if (err) throw err;
+				var dbo = db.db(nameOfDb);
+				dbo.collection("config_" + req.body.talbe).deleteOne(query, function(err, obj) {
 					if (err) throw err;
-					var dbo = db.db(nameOfDb);
-					dbo.collection(talbe).deleteOne(query, function(err, obj) {
-						if (err) throw err;
-						console.log("1 document deleted");
-						db.close();
-					});
+					console.log("1 document deleted");
+					db.close();
 				});
-				res.send('you just deleted that thing and it can not be restored ever');	
-			}else res.send('you broke it');
-		}else res.send("req.body.talbe is undefined or null");
-	}else res.send("req.body.talbe is undefined or null");
+			});
+
+			res.send('1 document deleted')
+
+		}else res.send('req.body.id is undefined or null');
+	}else res.send('req.body.table is undefined or null');
 
 }
 
@@ -181,59 +173,38 @@ const deleteConfig = (req, res)=>{
 
 const queryConfig = (req, res)=>{
 
-	query = {};
+	let query = {};
+	let go = tableIsGo(req.body);
 
-	let tempPromis = new Promise((resolve, reject) =>{
+	if( go != null){
 
-		if(req.body.talbe != undefined || req.body.talbe != null ){
-			if(req.body.talbe.length != 0){
-				talbe = "config_" + req.body.talbe;
-				// console.log("talbe" + talbe)
+		if( idIsGo(req.body) != null){
+			query._id = ObjectId(req.body.id);
+		}
 
-				if(req.body.id != null || req.body.id != undefined){
-					query._id = ObjectId(req.body.id);
-				}
+		if( docIsGo(req.body) ){
 
-				if(req.body.doc != null || req.body.doc != undefined){
-					if(req.body.doc.name != null || req.body.doc.name != undefined){
-						query.name = req.body.doc.name;
-						console.log('yep');
-					}
-					if(req.body.doc.dataType != null || req.body.doc.dataType != undefined){
-						query.dataType = req.body.doc.dataType;
-					}
-				}
+			if(req.body.doc.name != null || req.body.doc.name != undefined){
+				query.name = req.body.doc.name;
+			}
 
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection(talbe).find(query).toArray(function(err, result) {
-						if (err) throw err;
-						// console.log(result);
-						resolve(result);
-				    	db.close();
-					});
-				});
+			if(req.body.doc.dataType != null || req.body.doc.dataType != undefined){
+				query.dataType = req.body.doc.dataType;
+			}
 
-			}else resolve(null);
-		}else resolve(null);
+		}
 
-	});
-
-	tempPromis.then((tempVar) =>{
-		
-		if(tempVar != null){
-
-			// console.log(query);
-
-			res.send({
-				"query" : query,
-				"results" : tempVar
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection("config_" + req.body.talbe).find(query).toArray(function(err, result) {
+				if (err) throw err;
+				res.send(result);
+				db.close();
 			});
+		});
 
-		}else res.send('req.body.talbe is undefined or null');
-
-	});
+	}else res.send('req.body.table is undefined or null');
 
 }
 
