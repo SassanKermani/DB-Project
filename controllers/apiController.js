@@ -261,16 +261,6 @@ const creatInfo = (req, res)=>{
 					}
 				}
 
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection("config_" + req.body.talbe).updateOne(query, {$set: newThingInDb}, function(err, res) {
-						if (err) throw err;
-						console.log("1 document updated");
-						db.close();
-					});
-				});	
-
 				MongoClient.connect(url, function(err, db) {
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
