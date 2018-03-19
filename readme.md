@@ -33,6 +33,9 @@ config is set up by the infoDocs->infoDocs and config_config will be set up by t
 
 - change about to config && config to < routFile >
 
+- clean up code with functons for the promis also for valadiating req.body
+
+
 ### db stuff
 name Of db 			= 'ancon'
 about collection 	= 'about'

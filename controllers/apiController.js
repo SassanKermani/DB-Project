@@ -327,35 +327,27 @@ const updateInfo = (req, res)=>{
 
 const deleteInfo = (req, res)=>{
 
-	let deleteIsGo = false;
-	let query;
+	console.log("deleteInfo");
 
-	if(req.body.talbe != undefined || req.body.talbe != null ){
-		if(req.body.talbe.length != 0){
-			talbe = req.body.talbe;
-			console.log("talbe" + talbe)
+	let go = tableIsGo(req.body);
 
-			if(req.body.id != null || req.body.id != undefined){
-				deleteIsGo = true;
-				query = { _id : ObjectId(req.body.id) };
-			}else{
-				res.send('id is null or undefined');
-			}
+	if( go != null){
+		if( idIsGo(req.body) != null){
 
-			if(deleteIsGo === true){
-				MongoClient.connect(url, function(err, db) {
+			let query = { _id : ObjectId(req.body.id) };
+
+			MongoClient.connect(url, function(err, db) {
+				if (err) throw err;
+				var dbo = db.db(nameOfDb);
+				dbo.collection(req.body.talbe).deleteOne(query, function(err, obj) {
 					if (err) throw err;
-					var dbo = db.db(nameOfDb);
-					dbo.collection(talbe).deleteOne(query, function(err, obj) {
-						if (err) throw err;
-						console.log("1 document deleted");
-						db.close();
-					});
+					console.log("1 document deleted");
+					db.close();
 				});
-				res.send('you just deleted that thing and it can not be restored ever');	
-			}else res.send('you broke it');
-		}else res.send("req.body.talbe is undefined or null");
-	}else res.send("req.body.talbe is undefined or null");
+			});
+			res.send('1 document deleted');
+		}else res.send('req.body.id is undefined or null');
+	}else res.send('req.body.talbe is undefined or null');
 
 }
 
