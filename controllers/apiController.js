@@ -141,6 +141,8 @@ const updateConfig = (req, res)=>{
 /*----------  Delete Config  ----------*/
 const deleteConfig = (req, res)=>{
 
+	console.log('deleteConfig');
+
 	let go = tableIsGo(req.body);
 
 	if( go != null){
@@ -168,6 +170,8 @@ const deleteConfig = (req, res)=>{
 /*----------  Query Config  ----------*/
 
 const queryConfig = (req, res)=>{
+
+	console.log('queryConfig');
 
 	let query = {};
 	let go = tableIsGo(req.body);
@@ -213,6 +217,8 @@ const queryConfig = (req, res)=>{
 /*----------  Read info  ----------*/
 const readInfo = (req, res)=>{
 
+	// console.log('readInfo');
+
 	let go = tableIsGo(req.body);
 
 	if( go != null ){
@@ -225,89 +231,62 @@ const readInfo = (req, res)=>{
 				res.send(result);
 				db.close();
 			});
-});
+		});
 
-	}else res.send('req.bod.talbe is undefined or null');
+	}else res.send(req.body);
 
 };
 
 /*----------  Create Info   ----------*/
 const creatInfo = (req, res)=>{
 
-	let talbe;
+	console.log("creatInfo");
 
-	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.talbe != undefined || req.body.talbe != null ){
-			if(req.body.talbe.length != 0){
-				talbe = req.body.talbe;
-				console.log(talbe);
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection('config_' + talbe).find({}).toArray(function(err, result){
-						if (err) throw err;
-						//console.log(result);
-						resolve(result);
-				    	db.close();
-					});
-				});
-			}else resolve(null); 
-		}else resolve(null); 
-	});
+	let go = tableIsGo(req.body);
 
-	tempPromis.then( (tempVar)=>{
-		//res.send(tempVar);
+	if( go != null ){
+		if(docIsGo(req.body)){
+			getConfigTable(req.body.talbe).then(function(foo) {
+				
+				let newThingInDb = {};
 
-		console.log('tempVar');
-		console.log(tempVar)
-
-		if(tempVar != null){
-
-			let newThingInDb = {};
-			let insertIsGo = true;
-
-			for(let i = 0; i < tempVar.length; i++){
-
-				console.log('tempVar[i].name');
-				console.log(tempVar[i].name);
-
-				// console.log('hotSecVar');
-				// console.log(hotSecVar);
-
-				if(req.body.doc[tempVar[i].name] != undefined  || req.body.doc[tempVar[i].name] != null){
-					if( typeof req.body.doc[tempVar[i].name] === tempVar[i].dataType ){
-						newThingInDb[tempVar[i].name] = req.body.doc[tempVar[i].name];
-						insertIsGo = true;
-					}else{
-						insertIsGo = false;
-						res.send(`datatype of ${tempVar[i].name} is not correct`);
+				for(let i = 0; i < foo.length; i++){
+					if(req.body.doc[foo[i].name] != undefined || req.body.doc[foo[i].name] != null){
+						if(typeof req.body.doc[foo[i].name] === foo[i].dataType){
+							// console.log("req.body.doc[foo[i].name]");
+							// console.log(req.body.doc[foo[i].name]);
+							// console.log();
+							// console.log("typeof req.body.doc[foo[i].name]");
+							// console.log(typeof req.body.doc[foo[i].name]);
+							// console.log();
+							// console.log("foo[i].dataType");
+							// console.log(foo[i].dataType);
+							// console.log();
+							newThingInDb[foo[i].name] = req.body.doc[foo[i].name]
+						}
 					}
-					
 				}
 
-			}
+				// console.log();
+				// console.log(newThingInDb);
+				// console.log();
 
-			console.log(newThingInDb);
-
-			if(insertIsGo === true){
 				MongoClient.connect(url, function(err, db) {
 					if (err) throw err;
 					let dbo = db.db(nameOfDb);
 					
-					dbo.collection(talbe).insertOne(newThingInDb, function(err, res){
+					dbo.collection(req.body.talbe).insertOne(newThingInDb, function(err, res){
 						if (err) throw err;
-						// console.log('insertOne into the infoCollection');
-						// res.send(newThingInDb);
-					db.close();
+						console.log('insertOne into the infoCollection');
+						db.close();
 					});
+					res.send(newThingInDb);
 				});
-				res.send(newThingInDb);
-			}
 
-		}else req.send('req.bod.talbe is null or undefined');
+			})
+		}else req.send('req.body.doc is undefined or null')
+	}else res.send('req.bod.talbe is undefined or null');
 
-	});
-	// res.send('it broke');
 }
 
 /*----------  Upadte Info  ----------*/
@@ -538,6 +517,8 @@ const queryInfo = (req, res)=>{
 // req.body.table is good
 const tableIsGo = (body)=>{
 	let talbe = null;
+	// console.log('body');
+	// console.log(body);
 	if(body.talbe != undefined && body.talbe != null ){
 		if(body.talbe.length != 0){
 			talbe = body.talbe; 
