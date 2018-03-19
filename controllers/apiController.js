@@ -99,8 +99,9 @@ const creatConfig = (req, res)=>{
 /*----------  Update Config  ----------*/
 const updateConfig = (req, res)=>{
 
-	let go = tableIsGo(req.body);
+	console.log("updateConfig");
 
+	let go = tableIsGo(req.body);
 
 	if( go != null){
 		if( idIsGo(req.body) != null){
@@ -217,7 +218,7 @@ const queryConfig = (req, res)=>{
 /*----------  Read info  ----------*/
 const readInfo = (req, res)=>{
 
-	// console.log('readInfo');
+	console.log('readInfo');
 
 	let go = tableIsGo(req.body);
 
@@ -253,23 +254,22 @@ const creatInfo = (req, res)=>{
 				for(let i = 0; i < foo.length; i++){
 					if(req.body.doc[foo[i].name] != undefined || req.body.doc[foo[i].name] != null){
 						if(typeof req.body.doc[foo[i].name] === foo[i].dataType){
-							// console.log("req.body.doc[foo[i].name]");
-							// console.log(req.body.doc[foo[i].name]);
-							// console.log();
-							// console.log("typeof req.body.doc[foo[i].name]");
-							// console.log(typeof req.body.doc[foo[i].name]);
-							// console.log();
-							// console.log("foo[i].dataType");
-							// console.log(foo[i].dataType);
-							// console.log();
+
 							newThingInDb[foo[i].name] = req.body.doc[foo[i].name]
+						
 						}
 					}
 				}
 
-				// console.log();
-				// console.log(newThingInDb);
-				// console.log();
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db(nameOfDb);
+					dbo.collection("config_" + req.body.talbe).updateOne(query, {$set: newThingInDb}, function(err, res) {
+						if (err) throw err;
+						console.log("1 document updated");
+						db.close();
+					});
+				});	
 
 				MongoClient.connect(url, function(err, db) {
 					if (err) throw err;
@@ -292,98 +292,44 @@ const creatInfo = (req, res)=>{
 /*----------  Upadte Info  ----------*/
 const updateInfo = (req, res)=>{
 
-	let newThingInDb = {};
-	let updateIsGo = true;
-	let talbe;
+	console.log('updateInfo');
 
-	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.talbe != undefined || req.body.talbe != null ){
-			if(req.body.talbe.length != 0){
-				talbe = req.body.talbe;
-				console.log(talbe);
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection('config_' + talbe).find({}).toArray(function(err, result){
-						if (err) throw err;
-						//console.log(result);
-						resolve(result);
-				    	db.close();
-					});
-				});
-			}else resolve(null); 
-		}else resolve(null); 
-	});
+	let go = tableIsGo(req.body);
 
+	if( go != null){
+		if( idIsGo(req.body) != null){
+			let query = { _id : ObjectId(req.body.id) };
+			if(docIsGo(req.body) != null){
+				getConfigTable(req.body.talbe).then(function(foo){
+					
+					let newThingInDb = {};
 
-	tempPromis.then((tempVar)=>{
-		for(let i = 0; i < tempVar.length; i++){
+					for(let i = 0; i < foo.length; i++){
+						if(req.body.doc[foo[i].name] != undefined || req.body.doc[foo[i].name] != null){
+							if(typeof req.body.doc[foo[i].name] === foo[i].dataType){
 
-			if(req.body.id != null || req.body.id != undefined){
-				if(req.body.doc != undefined && typeof req.body.doc === 'object' ){
-					if(req.body.doc[tempVar[i].name] != undefined ){
-						if( typeof req.body.doc[tempVar[i].name] === tempVar[i].dataType ){
-							newThingInDb[tempVar[i].name] = req.body.doc[tempVar[i].name];
-						}else{
-							res.send(`datatype of ${tempVar[i].name} is not correct`);
-							updateIsGo = false;
+								newThingInDb[foo[i].name] = req.body.doc[foo[i].name]
+							
+							}
 						}
 					}
-				}else{
-					res.send(`the req.body.doc is undefined or is not of type object`);
-					updateIsGo = false;
-				}
-			}else{
-				res.send(`the req.body.id is undefined`);
-				updateIsGo = false;
+
+					MongoClient.connect(url, function(err, db) {
+						if (err) throw err;
+						let dbo = db.db(nameOfDb);
+						
+						dbo.collection(req.body.talbe).updateOne(query, {$set: newThingInDb}, function(err, res){
+							if (err) throw err;
+							console.log('insertOne into the infoCollection');
+							db.close();
+						});
+						res.send(newThingInDb);
+					});
+
+				})
 			}
-
-		}
-		// console.log('req.body.id');
-		// console.log(req.body.id);
-		// console.log('req.body.doc');
-		// console.log(req.body.doc);
-		// console.log('newThingInDb');
-		// console.log(newThingInDb);
-		// res.send(newThingInDb);
-
-		if(updateIsGo === true){
-
-			let query = { _id : ObjectId(req.body.id) };
-
-			// console.log('newThingInDb');
-			// console.log(newThingInDb);
-			// console.log()
-			// console.log('query');
-			// console.log(query);
-
-
-			MongoClient.connect(url, function(err, db){
-				if (err) throw err;
-				let dbo = db.db(nameOfDb);
-				dbo.collection(talbe).updateOne(query, {$set: newThingInDb}, function(err, res) {
-					if (err) throw err;
-					console.log("1 document updated");
-					db.close();
-				});
-			});
-			res.send(newThingInDb);
-
-			// // test to make sure my query works
-			// MongoClient.connect(url, function(err, db){
-			// 	if (err) throw err;
-			// 	let dbo = db.db(nameOfDb);
-			// 	dbo.collection(infoCollection).find(query).toArray(function(err, result) {
-			// 		if (err) throw err;
-			// 		console.log('test result');
-			// 		console.log(result);
-			// 		db.close();
-			// 	});
-			// });
-
-		}
-
-	})
+		}else res.send('req.body.talbe is undefined or null');
+	}else res.send('req.body.talbe is undefined or null');
 
 }
 
