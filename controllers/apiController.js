@@ -51,10 +51,6 @@ const creatConfig = (req, res)=>{
 				if(req.body.doc.dataType != null && req.body.doc.dataType && typeof req.body.doc.dataType === 'string'){
 
 					getConfigTable(req.body.talbe).then(function(foo) {
-						// console.log("foo");
-						// console.log(foo);
-						// console.log("");
-						// res.send(foo);
 
 						let doTheThing = true;
 
@@ -208,35 +204,30 @@ const queryConfig = (req, res)=>{
 
 }
 
-/*---------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------				Info 					----------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------*/
 
 /*----------  Read info  ----------*/
 const readInfo = (req, res)=>{
 
-	let tempPromis = new Promise((resolve, reject) =>{
-		if(req.body.talbe != undefined || req.body.talbe != null ){
-			if(req.body.talbe.length != 0){
-				let talbe = req.body.talbe;
-				console.log(talbe);
-				MongoClient.connect(url, function(err, db){
-					if (err) throw err;
-					let dbo = db.db(nameOfDb);
-					dbo.collection(talbe).find({}).toArray(function(err, result){
-						if (err) throw err;
-						//console.log(result);
-						resolve(result);
-				    	db.close();
-					});
-				});
-			}else resolve(null); 
-		}else resolve(null); 
-	});
+	let go = tableIsGo(req.body);
 
-	tempPromis.then((tempVar) =>{
-		if( tempVar != null){
-			res.send(tempVar);
-		}else res.send("req.body.talbe is undefined or null");
-	});
+	if( go != null ){
+
+		MongoClient.connect(url, function(err, db){
+			if (err) throw err;
+			let dbo = db.db(nameOfDb);
+			dbo.collection(req.body.talbe).find({}).toArray(function(err, result){
+				if (err) throw err;
+				res.send(result);
+				db.close();
+			});
+});
+
+	}else res.send('req.bod.talbe is undefined or null');
 
 };
 
