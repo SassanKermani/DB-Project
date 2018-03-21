@@ -24,6 +24,8 @@ build a mongo db that uses one collectin as a schema for the other collection.
 - done	 delete	|	done	delete
 - done	 query	|	doen	query
 
+- (DONE)find out how creat a rout for the user to see all the tables that are in the db
+
 - ok so I need to set up a way of telling what is conected to what and by what.
 basicly a way to track public and forin keys, somtihig that will self update...
 this is going to be hard and cick myass repedtudly. 
