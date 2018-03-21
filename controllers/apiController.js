@@ -8,8 +8,8 @@ const ObjectId = require('mongodb').ObjectId;
 const url = `mongodb://localhost:27017/`;
 
 const nameOfDb = 'ancon'
-const aboutCollection = 'about';
-const infoCollection = 'info';
+// const aboutCollection = 'about';
+// const infoCollection = 'info';
 
 /*=====  End of bringing in and seting up NPM's  ======*/
 
@@ -408,6 +408,7 @@ const queryInfo = (req, res)=>{
 ------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------*/
 
+/*----------  See All Tables  ----------*/
 const seeAllTables = (req, res)=>{
 
 	MongoClient.connect(url, function(err, db){
@@ -435,6 +436,13 @@ const seeAllTables = (req, res)=>{
 			db.close();
 		});
 	});
+}
+
+
+
+/*----------  Garbage Collection  ----------*/
+const garbageCollection = (req, res)=>{
+	
 }
 
 

@@ -35,18 +35,27 @@ const newThingInDb = {
 
 ////////////////////////////////////////////////////////
 
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   var dbo = db.db(nameOfDb);
+
+//   dbo.collection(infoCollection).drop();
+
+// });
+
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   var dbo = db.db(nameOfDb);
+
+//   dbo.collection(aboutCollection).drop();
+
+// });
+
 MongoClient.connect(url, function(err, db) {
   if (err) throw err;
   var dbo = db.db(nameOfDb);
 
-  dbo.collection(infoCollection).drop();
+  dbo.collection('config_undefined').drop();
 
 });
 
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  var dbo = db.db(nameOfDb);
-
-  dbo.collection(aboutCollection).drop();
-
-});

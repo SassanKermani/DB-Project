@@ -10,7 +10,6 @@ build a mongo db that uses one collectin as a schema for the other collection.
 
 # list o shit 
 
-
 - set up so user needs an api key to get in
 - (DONE)build a full crud for about
 - (DONE)build a full crud for info
@@ -35,13 +34,8 @@ config is set up by the infoDocs->infoDocs and config_config will be set up by t
 
 - change about to config && config to < routFile >
 
-- clean up code with functons for the promis also for valadiating req.body
+- (DONE)clean up code with functons for the promis also for valadiating req.body
 
-
-### db stuff
-name Of db 			= 'ancon'
-about collection 	= 'about'
-info collection 	= 'info'
 
 #### schema's and example objects that will be needed
 
@@ -67,8 +61,13 @@ schema is based off of the documents in the about collection
 }
 
 # boroken things
-- in the creatConfig you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... 
-- need to rename the config folder its misleading, but I realy dont want to come up with a new naming convenion 
+- in the creatConfig you have to make sure the req.body.dataType is = to a valad dattatype string, int, double, ... (not actuly as bit of a problam as I Thought)
  
 
 # ideas
+config_ table to hold relationships
+config_config table to also hold relationships
+
+how much to run this as a bisnes a year
+$ for hosting db 500,000 ($435,840)
+
