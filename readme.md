@@ -31,6 +31,7 @@ this is going to be hard and cick myass repedtudly.
 	
 I think the way im going to solve this with a config collection and a config_config collection 
 config is set up by the infoDocs->infoDocs and config_config will be set up by the configDocs->infoDocs 
+	-(DONE)get all config tables schemas 
 
 - change about to config && config to < routFile >
 
@@ -68,6 +69,4 @@ schema is based off of the documents in the about collection
 config_ table to hold relationships
 config_config table to also hold relationships
 
-how much to run this as a bisnes a year
-$ for hosting db 500,000 ($435,840)
 

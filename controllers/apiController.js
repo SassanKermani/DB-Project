@@ -468,7 +468,29 @@ const getAllConfig = (req, res)=>{
 		});
 
 		promise.then((data) => {
-			console.log(newResult);
+			// console.log(newResult);
+			for(let i = 0; i < newResult.length; i++){
+				
+				let promisTwo = new Promise((resolve, reject) => {
+					MongoClient.connect(url, function(err, db){
+						if (err) throw err;
+						let dbo = db.db('ancon');
+						dbo.collection(newResult[i]).find({}).project({ name: 1, dataType: 1, _id: 0 }).toArray(function(err, result){
+							if (err) throw err;
+							resolve(result);
+							db.close();
+						});
+					});
+				});
+
+				promisTwo.then( (dataTwo)=>{
+					allTheThings[newResult[i]] = dataTwo;
+					if( i = newResult.length){
+						res.send(allTheThings);
+					}
+				})
+
+			}
 		});
 
 }
