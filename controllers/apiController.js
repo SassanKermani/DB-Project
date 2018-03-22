@@ -5,9 +5,9 @@
 //mongo stuff
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId; 
-const url = `mongodb://localhost:27017/`;
+const url = process.env.MONGODB_URI || `mongodb://localhost:27017/`;
 
-const nameOfDb = 'ancon'
+const nameOfDb = process.env.DB || 'ancon'
 // const aboutCollection = 'about';
 // const infoCollection = 'info';
 
