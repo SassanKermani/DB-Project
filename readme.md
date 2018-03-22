@@ -31,7 +31,8 @@ this is going to be hard and cick myass repedtudly.
 	
 I think the way im going to solve this with a config collection and a config_config collection 
 config is set up by the infoDocs->infoDocs and config_config will be set up by the configDocs->infoDocs 
-	-(DONE)get all config tables schemas 
+	-(DONE)get all config tables schemas
+	-get get a list of every table, and what other tables it can join with and on what colloms
 
 - change about to config && config to < routFile >
 
