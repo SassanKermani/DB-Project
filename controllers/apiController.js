@@ -549,7 +549,7 @@ const getConfigTable = (table)=>{
     
 		MongoClient.connect(url, function(err, db){
 			if (err) throw err;
-			let dbo = db; //.db(nameOfDb);
+			let dbo = db.db(nameOfDb);
 			dbo.collection('config_' + table).find({}).toArray(function(err, result){
 				if (err) throw err;
 				//console.log(result);
