@@ -58,7 +58,7 @@ router.post('/queryInfo', controller.queryInfo);
 
 router.post('/seeAllTables', controller.seeAllTables);
 
-
+router.post('/getAllConfig', controller.getAllConfig);
 
 /*=====  End of routs  ======*/
 

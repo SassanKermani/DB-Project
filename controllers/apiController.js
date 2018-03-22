@@ -420,12 +420,13 @@ const seeAllTables = (req, res)=>{
 			
 			let newResult = [];
 
-			for(let ii = 0; ii < result.length; ii++){
+			for(let i = 0; i < result.length; i++){
 				
-				let i = 0;
+				let ii = 0;
 
-				if(result[ii].name.includes("config_") != true ){
-					newResult[i] = result[ii].name;
+				if(result[i].name.includes("config_") != true ){
+					newResult[ii] = result[i].name;
+					ii++;
 				}
 
 			}
@@ -440,11 +441,39 @@ const seeAllTables = (req, res)=>{
 
 
 
-/*----------  Garbage Collection  ----------*/
-const garbageCollection = (req, res)=>{
-	
+/*----------  Get All Config  ----------*/					//I think this is a desink problam... 
+const getAllConfig = (req, res)=>{
+
+	console.log('getAllConfig');
+
+	let newResult = [];
+	let allTheThings = {};
+
+		let promise = new Promise((resolve, reject) => {
+			MongoClient.connect(url, function(err, db){
+				if (err) throw err;
+				let dbo = db.db('ancon');
+				dbo.listCollections().toArray(function(err, result) {
+					for(let i = 0; i < result.length; i++){
+						let ii = 0;
+						if(result[i].name.includes("config_") === true ){
+							newResult[ii] = result[i].name;
+							ii++;
+						}
+					}
+					resolve(result);
+					db.close();
+				});
+			});
+		});
+
+		promise.then((data) => {
+			console.log(newResult);
+		});
+
 }
 
+// getAllConfig();
 
 /*=====  End of funcitons  ======*/
 
@@ -494,22 +523,22 @@ const idIsGo = (body)=>{
 //Get Config Tabl
 const getConfigTable = (table)=>{
   
-	let promis = new Promise((resolve, reject)=>{
+	let promise = new Promise((resolve, reject)=>{
     
 		MongoClient.connect(url, function(err, db){
 			if (err) throw err;
 			let dbo = db.db('ancon');
 			dbo.collection('config_' + table).find({}).toArray(function(err, result){
-			if (err) throw err;
-			//console.log(result);
-			resolve(result);
-			db.close();
+				if (err) throw err;
+				//console.log(result);
+				resolve(result);
+				db.close();
 			});
 		});
 
 	});
 
-	return promis.then((result)=>{
+	return promise.then((result)=>{
 		// console.log("result");
 		// console.log(result);
 		// console.log("");
@@ -541,5 +570,6 @@ module.exports = {
 	queryInfo,
 
 	seeAllTables,
+	getAllConfig
 
 }
