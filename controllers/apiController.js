@@ -5,7 +5,7 @@
 //mongo stuff
 const MongoClient = require('mongodb').MongoClient;
 const ObjectId = require('mongodb').ObjectId; 
-const url = process.env.MONGODB_URI || `mongodb://localhost:27017/`;
+const url = process.env.NEW_URI || `mongodb://localhost:27017/ancon`;
 
 const nameOfDb = process.env.DB || 'ancon'
 // const aboutCollection = 'about';
@@ -549,7 +549,7 @@ const getConfigTable = (table)=>{
     
 		MongoClient.connect(url, function(err, db){
 			if (err) throw err;
-			let dbo = db.db('ancon');
+			let dbo = db; //.db(nameOfDb);
 			dbo.collection('config_' + table).find({}).toArray(function(err, result){
 				if (err) throw err;
 				//console.log(result);
