@@ -418,20 +418,21 @@ const seeAllTables = (req, res)=>{
 		
 		dbo.listCollections().toArray(function(err, result) {
 			
+
 			let newResult = [];
+
+			let ii = 0;
 
 			for(let i = 0; i < result.length; i++){
 				
-				let ii = 0;
-
 				if(result[i].name.includes("config_") != true ){
 					newResult[ii] = result[i].name;
+					console.log('test');
 					ii++;
 				}
 
 			}
 
-			// console.log(newResult);
 			res.send(newResult);
 
 			db.close();
