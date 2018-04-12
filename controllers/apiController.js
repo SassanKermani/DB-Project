@@ -408,7 +408,7 @@ const queryInfo = (req, res)=>{
 ------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------*/
 
-/*----------  See All Tables  ----------*/
+/*----------  See All Tables  ----------*/								//BROKE
 const seeAllTables = (req, res)=>{
 
 	MongoClient.connect(url, function(err, db){
@@ -441,7 +441,7 @@ const seeAllTables = (req, res)=>{
 
 
 
-/*----------  Get All Config  ----------*/					//I think this is a desink problam... 
+/*----------  Get All Config  ----------*/					//BROKE
 const getAllConfig = (req, res)=>{
 
 	console.log('getAllConfig');
@@ -498,6 +498,16 @@ const getAllConfig = (req, res)=>{
 // getAllConfig();
 
 /*=====  End of funcitons  ======*/
+
+/*=================================================================
+=            Funcitons for servers taking to eachother            =
+=================================================================*/
+
+const getDb = ()=>{
+
+}
+
+/*=====  End of Funcitons for servers taking to eachother  ======*/
 
 
 
@@ -580,11 +590,13 @@ const getConfigTable = (table)=>{
 
 /*----------  exports  ----------*/
 module.exports = {
+	
 	readConfig,
 	creatConfig,
 	updateConfig,
 	deleteConfig,
 	queryConfig,
+	
 	readInfo,
 	creatInfo,
 	updateInfo,
@@ -592,6 +604,8 @@ module.exports = {
 	queryInfo,
 
 	seeAllTables,
-	getAllConfig
+	getAllConfig,
+
+	getDb
 
 }

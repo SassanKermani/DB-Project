@@ -69,6 +69,7 @@ schema is based off of the documents in the about collection
 # ideas
 config_ table to hold relationships
 config_config table to also hold relationships
+set up a muliti server thing that can update eachuother or interact with eachother 
 
 
 

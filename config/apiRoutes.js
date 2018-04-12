@@ -64,34 +64,36 @@ router.post('/seeAllTables', controller.seeAllTables);
 
 router.post('/getAllConfig', controller.getAllConfig);
 
+router.get('/getDb', controller.getDb);
+
 /*=====  End of routs  ======*/
 
 /*----------  object that shows all endpoints for api  ----------*/
 const apiEndpoints = {
-	'/api' : 'list of all api endpoints',
+	"/api" : "list of all api endpoints",
 
-	'config collection' :{
-		'/api/readAbout' : 'post rout sends all docs in config collection',
-		'/api/creatAbout' : 'post rout creat new doc in config collection',
-		'/api/updateAbout' : 'post rout update a doc in config collection based on id',
-		'/api/deleteAbout' : 'post route delete a doc in config collection based on id',
-		'/api/queryAbout' : 'post route query search for doc in the config collection'
+	"config collection" : {
+		"/api/readConfig" : "post rout sends all docs in config collection",
+		"/api/creatConfig" : "post rout creat new doc in config collection",
+		"/api/updateConfig" : "post rout update a doc in config collection based on id",
+		"/api/deleteConfig" : "post route delete a doc in config collection based on id",
+		"/api/queryConfig" : "post route query search for doc in the config collection"
 	},
 
-	'info collection' :{
-		'/api/readInfo' : 'post rout sends all docs in info collection',
-		'/api/creatInfo' : 'post rout creat new doc in info collection',
-		'/api/updateInfo' : 'post rout update a doc in info collection based on id',
-		'/api/deleteInfo' : 'post route delete a doc in info collection based on id',
-		'/api/queryInfo' : 'post route query search for doc in the info collection'
+	"info collection" : {
+		"/api/readInfo" : "post rout sends all docs in info collection",
+		"/api/creatInfo" : "post rout creat new doc in info collection",
+		"/api/updateInfo" : "post rout update a doc in info collection based on id",
+		"/api/deleteInfo" : "post route delete a doc in info collection based on id",
+		"/api/queryInfo" : "post route query search for doc in the info collection"
 	},
 
-	'both':{
-		'/api/seeAllTables' : 'post rout sends array of all schemas in db',
-		'/api/getAllConfig' : 'post rout sends array of all schemas in db with schema',
+	"both" : {
+		"/api/seeAllTables" : "post rout sends array of all schemas in db",
+		"/api/getAllConfig" : "post rout sends array of all schemas in db with schema",
 	},
 
-	'what req.body example': '{ id:<id>, table:<table>, doc:<{ <something>: <something>, ... }> }'
+	"what req.body example" : "{ id:<id>, table:<table>, doc:<{ <something>: <something>, ... }> }"
 
 }
 /*----------  exports  ----------*/
