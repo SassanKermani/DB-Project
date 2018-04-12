@@ -455,13 +455,14 @@ const getAllConfig = (req, res)=>{
 				if (err) throw err;
 				let dbo = db.db('ancon');
 				dbo.listCollections().toArray(function(err, result) {
+					let ii = 0;
 					for(let i = 0; i < result.length; i++){
-						let ii = 0;
 						if(result[i].name.includes("config_") === true ){
 							newResult[ii] = result[i].name;
 							ii++;
 						}
 					}
+					// console.log(newResult);
 					resolve(result);
 					db.close();
 				});
@@ -472,24 +473,23 @@ const getAllConfig = (req, res)=>{
 			// console.log(newResult);
 			for(let i = 0; i < newResult.length; i++){
 				
-				let promisTwo = new Promise((resolve, reject) => {
-					MongoClient.connect(url, function(err, db){
+				MongoClient.connect(url, function(err, db){
+					if (err) throw err;
+					let dbo = db.db('ancon');
+					dbo.collection(newResult[i]).find({}).project({ name: 1, dataType: 1, _id: 0 }).toArray(function(err, result){
 						if (err) throw err;
-						let dbo = db.db('ancon');
-						dbo.collection(newResult[i]).find({}).project({ name: 1, dataType: 1, _id: 0 }).toArray(function(err, result){
-							if (err) throw err;
-							resolve(result);
-							db.close();
-						});
+						// console.log(result);
+						allTheThings[newResult[i]] = result;
+						// console.log("allTheThings");
+						// console.log(allTheThings);
+						// console.log();
+						if(i == newResult.length -1){
+							// console.log("GO");
+							res.send(allTheThings)
+						}
+						db.close();
 					});
 				});
-
-				promisTwo.then( (dataTwo)=>{
-					allTheThings[newResult[i]] = dataTwo;
-					if( i = newResult.length){
-						res.send(allTheThings);
-					}
-				})
 
 			}
 		});
